@@ -2962,3 +2962,59 @@ body {
   .header-wa-icon { margin-left: auto; }
   .header-bar { max-width: 1140px; }
 }
+
+/* Explore CTA + search visibility */
+.hero-explore {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 15px 28px;
+  min-height: 52px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, #e0c078, #c9a461 45%, #9f7a35);
+  color: #1a2a26;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  box-shadow:
+    0 0 0 1px rgba(201, 164, 97, 0.25),
+    0 14px 32px rgba(0, 0, 0, 0.35),
+    0 12px 28px rgba(201, 164, 97, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.hero-explore:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(224, 192, 120, 0.45),
+    0 18px 36px rgba(0, 0, 0, 0.4),
+    0 16px 32px rgba(201, 164, 97, 0.5);
+  color: #1a2a26;
+}
+.hero-explore i {
+  font-size: 0.85em;
+}
+.hero-scroll-hint { display: none !important; }
+
+.listings-heading {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  color: #fff;
+  margin: 8px 0 16px;
+  font-weight: 600;
+}
+
+#results,
+#rentals {
+  scroll-margin-top: 100px;
+}
+
+.featured-grid {
+  margin-bottom: 28px;
+}

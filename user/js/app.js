@@ -86,7 +86,13 @@ function escapeHtml(str) {
 }
 
 function scrollToRentals() {
-  const el = document.getElementById("rentals");
+  const el = document.getElementById("rentals") || document.getElementById("results");
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function scrollToResults() {
+  const el = document.getElementById("results") || document.getElementById("grid");
   if (!el) return;
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -119,12 +125,19 @@ function detectTypeFromQuery(q) {
   return "";
 }
 
-function searchTokens(q) {
-  return q
+function normalizeText(str) {
+  return String(str || "")
     .toLowerCase()
-    .trim()
-    .split(/[\s,;/|]+/)
-    .map((t) => t.trim())
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function searchTokens(q) {
+  return normalizeText(q)
+    .split(/\s+/)
     .filter((t) => t && !SEARCH_STOP.has(t));
 }
 
@@ -132,22 +145,25 @@ function matchesSearch(p, q) {
   if (!q) return true;
   const typeLabel = typeLabels[p.propertyType] || "";
   const typeSynonyms = (TYPE_WORDS[p.propertyType] || []).join(" ");
-  const hay = [
-    p.title,
-    p.location,
-    p.city,
-    p.description,
-    p.propertyType,
-    typeLabel,
-    typeSynonyms,
-  ]
-    .join(" ")
-    .toLowerCase();
+  const hay = normalizeText(
+    [p.title, p.location, p.city, p.description, p.propertyType, typeLabel, typeSynonyms].join(" ")
+  );
 
-  // All meaningful tokens must match (e.g. "masaki apartment")
   const tokens = searchTokens(q);
   if (!tokens.length) return true;
   return tokens.every((t) => hay.includes(t));
+}
+
+function syncTypeFilterFromQuery(q) {
+  const detected = detectTypeFromQuery(q);
+  const typeEl = document.getElementById("filterType");
+  if (typeEl) typeEl.value = detected || "";
+  document.querySelectorAll(".type-tabs .cat-btn, .cat-btn").forEach((btn) => {
+    const t = btn.dataset.type ?? "";
+    if (detected) btn.classList.toggle("active", t === detected);
+    else btn.classList.toggle("active", btn.classList.contains("cat-btn-all") || t === "");
+  });
+  return detected;
 }
 
 function renderHeroStats() {
@@ -161,12 +177,28 @@ function renderHeroStats() {
   `;
 }
 
-function renderFeatured() {
-  const featured = properties.filter((p) => p.featured);
+function renderFeatured(fromList) {
   const section = document.getElementById("featured");
   const grid = document.getElementById("featuredGrid");
+  if (!section || !grid) return;
+
+  const q = document.getElementById("search")?.value.trim() || "";
+  const type = document.getElementById("filterType")?.value || "";
+  const min = document.getElementById("minPrice")?.value || "";
+  const max = document.getElementById("maxPrice")?.value || "";
+  const filtering = !!(q || type || min || max);
+
+  // When searching/filtering, hide featured so results stay clear and vertical
+  if (filtering) {
+    section.classList.add("hidden");
+    grid.innerHTML = "";
+    return;
+  }
+
+  const featured = (fromList || properties).filter((p) => p.featured);
   if (!featured.length) {
     section.classList.add("hidden");
+    grid.innerHTML = "";
     return;
   }
   section.classList.remove("hidden");
@@ -425,8 +457,10 @@ function render(list) {
 }
 
 function applyFilters() {
+  const list = getFilteredList();
   renderActiveFilters();
-  render(getFilteredList());
+  render(list);
+  renderFeatured();
 }
 
 function filterByType(type) {
@@ -453,35 +487,16 @@ function clearFilters() {
 function heroSearchGo() {
   const q = document.getElementById("heroSearch")?.value.trim() || "";
   syncSearchInputs(q);
-
-  const detected = detectTypeFromQuery(q);
-  if (detected) {
-    document.getElementById("filterType").value = detected;
-    document.querySelectorAll(".cat-btn").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.type === detected);
-    });
-  }
-
+  syncTypeFilterFromQuery(q);
   applyFilters();
-  scrollToRentals();
+  scrollToResults();
 }
 
 function runQuickChip(q) {
   syncSearchInputs(q);
-  const detected = detectTypeFromQuery(q);
-  if (detected) {
-    document.getElementById("filterType").value = detected;
-    document.querySelectorAll(".cat-btn").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.type === detected);
-    });
-  } else {
-    document.getElementById("filterType").value = "";
-    document.querySelectorAll(".cat-btn").forEach((btn) => {
-      btn.classList.toggle("active", btn.classList.contains("cat-btn-all"));
-    });
-  }
+  syncTypeFilterFromQuery(q);
   applyFilters();
-  scrollToRentals();
+  scrollToResults();
 }
 
 function setView(view) {
@@ -679,6 +694,7 @@ document.addEventListener("keydown", (e) => {
 window.stepCardCarousel = stepCardCarousel;
 window.goCardCarousel = goCardCarousel;
 window.scrollToRentals = scrollToRentals;
+window.scrollToResults = scrollToResults;
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.toggleSave = toggleSave;
@@ -727,13 +743,7 @@ if (heroSearch) {
     syncSearchInputs(heroSearch.value);
     clearTimeout(heroSearchTimer);
     heroSearchTimer = setTimeout(() => {
-      const detected = detectTypeFromQuery(heroSearch.value);
-      if (detected) {
-        document.getElementById("filterType").value = detected;
-        document.querySelectorAll(".cat-btn").forEach((btn) => {
-          btn.classList.toggle("active", btn.dataset.type === detected);
-        });
-      }
+      syncTypeFilterFromQuery(heroSearch.value);
       applyFilters();
     }, 180);
   });

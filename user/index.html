@@ -49,7 +49,7 @@
       <div class="hero-shade"></div>
     </div>
     <div class="hero-inner">
-      <p class="eyebrow">Karibu — Premium rentals Tanzania</p>
+      <p class="eyebrow">Karibu — Rentals across Tanzania</p>
       <p class="brand-mark">YOLO</p>
       <h1>Homes worth visiting,<br>searched with care,<br>arranged for you.</h1>
       <p class="hero-accent">Rent thoughtfully</p>
@@ -57,7 +57,10 @@
         YOLO Real Estate helps you find houses, apartments, rooms and commercial spaces for rent across Tanzania.
         Search listings with photos and video, message us for details, and we arrange a site visit so you see the place before you rent.
       </p>
-      <p class="hero-scroll-hint"><a href="#rentals">Explore rentals below <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a></p>
+      <a href="#rentals" class="hero-explore" onclick="scrollToRentals(); return false;">
+        Explore rentals below
+        <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+      </a>
     </div>
   </section>
 
@@ -132,10 +135,13 @@
             <h2 class="block-title left">Hand-picked for you</h2>
           </div>
         </div>
-        <div class="rail" id="featuredGrid"></div>
+        <div class="grid listing-grid featured-grid" id="featuredGrid"></div>
       </section>
 
-      <div class="grid listing-grid" id="grid"></div>
+      <div id="results">
+        <h2 class="listings-heading">All matching rentals</h2>
+        <div class="grid listing-grid" id="grid"></div>
+      </div>
       <div class="skeleton-grid hidden" id="skeleton">
         <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
       </div>
