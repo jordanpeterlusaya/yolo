@@ -49,22 +49,6 @@
   },
   {
     "id": "4",
-    "title": "Commercial Plot in Mbezi Beach",
-    "description": "Prime land suitable for retail or office development. All utilities available at the boundary.",
-    "price": 450000000,
-    "listingType": "sale",
-    "propertyType": "land",
-    "location": "Mbezi Beach, Dar es Salaam",
-    "city": "Dar es Salaam",
-    "bedrooms": 0,
-    "bathrooms": 0,
-    "area": 87120,
-    "image": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80",
-    "featured": true,
-    "createdAt": "2026-02-15T10:00:00.000Z"
-  },
-  {
-    "id": "5",
     "title": "Shop Space in City Centre",
     "description": "Ground floor retail space with high foot traffic. Ready for immediate occupation.",
     "price": 5000000,
@@ -80,11 +64,11 @@
     "createdAt": "2026-03-01T10:00:00.000Z"
   },
   {
-    "id": "6",
-    "title": "4 Bedroom House to Buy in Mikocheni",
+    "id": "5",
+    "title": "4 Bedroom House in Mikocheni",
     "description": "Beautiful home with swimming pool, staff quarters, and backup power. Gated community with excellent security.",
-    "price": 850000000,
-    "listingType": "sale",
+    "price": 6500000,
+    "listingType": "rent",
     "propertyType": "house",
     "location": "Mikocheni, Dar es Salaam",
     "city": "Dar es Salaam",
@@ -94,5 +78,21 @@
     "image": "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80",
     "featured": true,
     "createdAt": "2026-03-05T10:00:00.000Z"
+  },
+  {
+    "id": "6",
+    "title": "1 Bedroom Apartment in Mbezi Beach",
+    "description": "Bright apartment near the beach with parking and reliable water. Ideal for a single professional or couple.",
+    "price": 900000,
+    "listingType": "rent",
+    "propertyType": "apartment",
+    "location": "Mbezi Beach, Dar es Salaam",
+    "city": "Dar es Salaam",
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "area": 520,
+    "image": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80",
+    "featured": true,
+    "createdAt": "2026-02-15T10:00:00.000Z"
   }
 ]

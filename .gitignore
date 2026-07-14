@@ -30,9 +30,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+firebase-debug.log
+.cursor/
 
 # env files (can opt-in for committing if needed)
 .env*
+.supabase-db-password
+.supabase/
 
 # vercel
 .vercel

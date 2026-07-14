@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — YOLO Rentals</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+  <header class="admin-header">
+    <a href="/admin/" class="brand">
+      <img src="/assets/logo.png" alt="YOLO" class="logo-img">
+      <span>Admin</span>
+    </a>
+    <div class="header-actions">
+      <a href="/" class="link-muted" target="_blank" rel="noopener">View user site</a>
+      <button type="button" class="btn btn-ghost hidden" id="logoutBtn">Log out</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <div id="setupNotice" class="notice warn hidden"></div>
+
+    <section class="card-panel" id="loginBox">
+      <h1>Admin login</h1>
+      <p class="sub">Sign in with your Supabase Email/Password admin user to manage rentals.</p>
+      <form id="loginForm">
+        <label for="email">Email</label>
+        <input type="email" id="email" required autocomplete="username" placeholder="admin@example.com">
+        <label for="password">Password</label>
+        <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
+        <p class="error hidden" id="loginError"></p>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </form>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="dash-head">
+        <div>
+          <h1>Manage rentals</h1>
+          <p class="sub">Changes sync live to the user website via Supabase.</p>
+        </div>
+        <div class="dash-actions">
+          <button type="button" class="btn btn-secondary" id="seedBtn">Import sample rentals</button>
+          <span class="pill" id="authEmail"></span>
+        </div>
+      </div>
+
+      <div class="layout">
+        <form class="card-panel form-panel" id="propertyForm">
+          <h2 id="formTitle">Add rental</h2>
+          <input type="hidden" id="editId">
+
+          <label for="title">Title *</label>
+          <input type="text" id="title" required placeholder="3 Bedroom House in Masaki">
+
+          <label for="description">Description *</label>
+          <textarea id="description" rows="3" required placeholder="Short description for tenants"></textarea>
+
+          <label for="price">Monthly rent (TZS) *</label>
+          <input type="number" id="price" required min="0" placeholder="2500000">
+
+          <label for="propertyType">Property type</label>
+          <select id="propertyType">
+            <option value="house">House</option>
+            <option value="apartment">Apartment</option>
+            <option value="room">Room</option>
+            <option value="commercial">Commercial</option>
+          </select>
+
+          <div class="row-2">
+            <div>
+              <label for="location">Location *</label>
+              <input type="text" id="location" required placeholder="Masaki, Dar es Salaam">
+            </div>
+            <div>
+              <label for="city">City *</label>
+              <input type="text" id="city" required placeholder="Dar es Salaam">
+            </div>
+          </div>
+
+          <div class="row-3">
+            <div>
+              <label for="bedrooms">Bedrooms</label>
+              <input type="number" id="bedrooms" value="0" min="0">
+            </div>
+            <div>
+              <label for="bathrooms">Bathrooms</label>
+              <input type="number" id="bathrooms" value="0" min="0">
+            </div>
+            <div>
+              <label for="area">Area (sqft)</label>
+              <input type="number" id="area" value="0" min="0">
+            </div>
+          </div>
+
+          <label for="imageFiles">Photos * <span class="label-hint">(up to 12, max 5 MB each)</span></label>
+          <div class="image-upload">
+            <input type="file" id="imageFiles" accept="image/*" multiple>
+            <div class="gallery-preview" id="galleryPreview"></div>
+            <p class="image-hint" id="imageHint">Add one or more photos from your device</p>
+          </div>
+
+          <label for="videoFile">Video <span class="label-hint">(optional, MP4/WebM, max 50 MB)</span></label>
+          <div class="image-upload">
+            <input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime">
+            <div class="video-preview-wrap" id="videoPreviewWrap">
+              <video id="videoPreview" class="video-preview hidden" controls playsinline></video>
+              <button type="button" class="btn btn-ghost-sm hidden" id="clearVideoBtn">Remove video</button>
+            </div>
+            <p class="image-hint" id="videoHint">Optional walkthrough video for tenants</p>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="featured"> Featured on homepage
+          </label>
+
+          <p class="error hidden" id="formError"></p>
+          <p class="ok hidden" id="formOk"></p>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="saveBtn">Save rental</button>
+            <button type="button" class="btn btn-secondary hidden" id="cancelBtn">Cancel edit</button>
+          </div>
+        </form>
+
+        <div class="card-panel list-panel">
+          <div class="list-head">
+            <h2>Posted rentals (<span id="count">0</span>)</h2>
+            <button type="button" class="btn btn-secondary btn-sm" id="refreshListBtn">Refresh</button>
+          </div>
+          <div class="posted-grid" id="postedGrid"></div>
+          <p class="empty hidden" id="emptyList">No rentals yet. Add one or import samples.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/shared/supabase-config.js"></script>
+  <script src="/shared/supabase.js"></script>
+  <script src="/admin/js/admin.js"></script>
+</body>
+</html>
