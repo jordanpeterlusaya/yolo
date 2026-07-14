@@ -10,7 +10,8 @@
   <link rel="icon" href="/assets/logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Italiana&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="/user/css/style.css">
 </head>
 <body>
@@ -20,19 +21,15 @@
       <a href="/" class="logo">
         <img src="/assets/logo.png" alt="YOLO Real Estate" class="logo-img">
       </a>
-      <div class="header-actions" aria-label="Contact">
-        <a href="tel:+25475035540" class="header-call">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span class="header-call-text">
-            <small>Call us</small>
-            <strong>0750 355 40</strong>
-          </span>
-        </a>
-        <a href="https://wa.me/25475035540?text=Hi!%20I%20need%20help%20finding%20a%20rental." class="header-wa" target="_blank" rel="noopener">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          <span>WhatsApp</span>
-        </a>
-      </div>
+      <a
+        class="header-wa-icon"
+        href="https://wa.me/25475035540?text=Hi!%20I%20need%20help%20finding%20a%20rental."
+        target="_blank"
+        rel="noopener"
+        aria-label="WhatsApp"
+      >
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+      </a>
     </div>
     <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="#rentals">Rentals</a>
@@ -52,12 +49,15 @@
       <div class="hero-shade"></div>
     </div>
     <div class="hero-inner">
+      <p class="eyebrow">Karibu — Premium rentals Tanzania</p>
       <p class="brand-mark">YOLO</p>
-      <h1>Find a place to rent across Tanzania</h1>
-      <p class="hero-text">Homes, apartments, rooms and commercial spaces — browse online, then visit with us.</p>
-      <div class="hero-btns">
-        <a href="#rentals" class="btn btn-primary" onclick="scrollToRentals(); return false;">Browse rentals</a>
-      </div>
+      <h1>Homes worth visiting,<br>searched with care,<br>arranged for you.</h1>
+      <p class="hero-accent">Rent thoughtfully</p>
+      <p class="hero-text">
+        YOLO Real Estate helps you find houses, apartments, rooms and commercial spaces for rent across Tanzania.
+        Search listings with photos and video, message us for details, and we arrange a site visit so you see the place before you rent.
+      </p>
+      <p class="hero-scroll-hint"><a href="#rentals">Explore rentals below <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a></p>
     </div>
   </section>
 
@@ -180,13 +180,9 @@
   <section class="contact-strip">
     <div class="contact-inner section-wrap">
       <div>
-        <p class="section-label contact-label">Need a shortlist?</p>
-        <h2>Tell us budget and area</h2>
-        <p>We’ll recommend rentals and arrange viewings for you.</p>
-      </div>
-      <div class="contact-actions">
-        <a href="tel:+25475035540" class="btn btn-outline-light">Call us</a>
-        <a href="https://wa.me/25475035540?text=Hi!%20Please%20help%20me%20find%20a%20rental." class="btn btn-primary" target="_blank" rel="noopener">WhatsApp</a>
+        <p class="section-label contact-label">Personal help</p>
+        <h2>Not sure where to start?</h2>
+        <p>Share your budget and preferred areas — we shortlist rentals and arrange viewings.</p>
       </div>
     </div>
   </section>
@@ -269,6 +265,20 @@
       <p>&copy; 2026 YOLO Real Estate · Rentals only</p>
     </div>
   </footer>
+
+  <div class="mobile-book-bar" aria-label="Quick contact">
+    <a class="mobile-book-call" href="tel:+25475035540">
+      <i class="fa-solid fa-phone" aria-hidden="true"></i> Call
+    </a>
+    <a
+      class="mobile-book-wa"
+      href="https://wa.me/25475035540?text=Hi!%20I%20need%20help%20finding%20a%20rental."
+      target="_blank"
+      rel="noopener"
+    >
+      <i class="fa-brands fa-whatsapp" aria-hidden="true"></i> WhatsApp
+    </a>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/shared/supabase-config.js"></script>
