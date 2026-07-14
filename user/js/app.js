@@ -95,10 +95,8 @@ function syncSearchInputs(value) {
   const v = value ?? "";
   const search = document.getElementById("search");
   const hero = document.getElementById("heroSearch");
-  const mob = document.getElementById("mobileSearch");
   if (search && search.value !== v) search.value = v;
   if (hero && hero.value !== v) hero.value = v;
-  if (mob && mob.value !== v) mob.value = v;
 }
 
 const TYPE_WORDS = {
@@ -412,18 +410,17 @@ function renderActiveFilters() {
 
 function render(list) {
   const grid = document.getElementById("grid");
-  const empty = document.getElementById("empty");
-  grid.className = currentView === "list" ? "grid grid-list" : "grid";
+  grid.className = "grid dense-grid";
 
   document.getElementById("resultCount").textContent =
     list.length === 1 ? "1 rental found" : `${list.length} rentals found`;
 
   if (!list.length) {
     grid.innerHTML = "";
-    empty.classList.remove("hidden");
+    document.getElementById("empty").classList.remove("hidden");
     return;
   }
-  empty.classList.add("hidden");
+  document.getElementById("empty").classList.add("hidden");
   grid.innerHTML = list.map((p) => cardHtml(p, false)).join("");
 }
 
@@ -465,6 +462,27 @@ function heroSearchGo() {
     });
   }
 
+  applyFilters();
+  scrollToRentals();
+}
+
+function runQuickChip(q) {
+  syncSearchInputs(q);
+  const detected = detectTypeFromQuery(q);
+  if (detected) {
+    document.getElementById("filterType").value = detected;
+    document.querySelectorAll(".cat-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.type === detected);
+    });
+  } else {
+    document.getElementById("filterType").value = "";
+    document.querySelectorAll(".cat-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.classList.contains("cat-btn-all"));
+    });
+  }
+  document.querySelectorAll(".chip").forEach((c) => {
+    c.classList.toggle("active", c.dataset.q === q);
+  });
   applyFilters();
   scrollToRentals();
 }
@@ -698,24 +716,14 @@ document.getElementById("minPrice").addEventListener("input", () => applyFilters
 document.getElementById("maxPrice").addEventListener("input", () => applyFilters());
 
 /* Nav stays visible on all screen sizes — no hamburger handlers needed */
-const mobileSearch = document.getElementById("mobileSearch");
-const mobileSearchSticky = document.getElementById("mobileSearchSticky");
-const mainSearch = document.getElementById("search");
 const heroSearch = document.getElementById("heroSearch");
 
-if (mobileSearch) {
-  mobileSearch.addEventListener("input", () => {
-    syncSearchInputs(mobileSearch.value);
-    applyFilters();
-  });
-  mobileSearch.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      applyFilters();
-      scrollToRentals();
-    }
-  });
-}
+document.getElementById("quickChips")?.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip");
+  if (!chip) return;
+  runQuickChip(chip.dataset.q || "");
+});
+
 if (heroSearch) {
   let heroSearchTimer = null;
   heroSearch.addEventListener("input", () => {
@@ -730,7 +738,7 @@ if (heroSearch) {
         });
       }
       applyFilters();
-    }, 200);
+    }, 180);
   });
 }
 
@@ -740,9 +748,7 @@ function updateScrollUI() {
   const y = window.scrollY;
   document.getElementById("backTop")?.classList.toggle("hidden", y < 400);
   document.querySelector(".site-header")?.classList.toggle("scrolled", y > 20);
-  if (mobileSearchSticky) {
-    mobileSearchSticky.classList.toggle("visible", y > 350 && window.innerWidth <= 768);
-  }
+  document.getElementById("discoverSticky")?.classList.toggle("stuck", y > 280);
   updateHeaderNav(y);
 }
 
