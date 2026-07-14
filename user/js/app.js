@@ -410,7 +410,7 @@ function renderActiveFilters() {
 
 function render(list) {
   const grid = document.getElementById("grid");
-  grid.className = "grid dense-grid";
+  grid.className = "grid listing-grid";
 
   document.getElementById("resultCount").textContent =
     list.length === 1 ? "1 rental found" : `${list.length} rentals found`;
@@ -480,9 +480,6 @@ function runQuickChip(q) {
       btn.classList.toggle("active", btn.classList.contains("cat-btn-all"));
     });
   }
-  document.querySelectorAll(".chip").forEach((c) => {
-    c.classList.toggle("active", c.dataset.q === q);
-  });
   applyFilters();
   scrollToRentals();
 }
