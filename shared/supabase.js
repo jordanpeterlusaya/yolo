@@ -344,6 +344,25 @@
     if (error) throw error;
   }
 
+  async function seedBrokersFromJson(items) {
+    const sb = ensure();
+    const rows = (items || []).map((item) => ({
+      name: String(item.name || "").trim(),
+      phone: String(item.phone || "").trim(),
+      email: item.email ? String(item.email).trim() : null,
+      areas: item.areas ? String(item.areas).trim() : null,
+      active: item.active !== false,
+      notes: item.notes ? String(item.notes).trim() : null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })).filter((r) => r.name && r.phone);
+
+    if (!rows.length) throw new Error("No brokers to import");
+    const { error } = await sb.from("brokers").insert(rows);
+    if (error) throw error;
+    return rows.length;
+  }
+
   async function seedFromJson(items) {
     const sb = ensure();
     const rows = items.map((item) => {
@@ -422,6 +441,7 @@
     createBroker,
     updateBroker,
     deleteBroker,
+    seedBrokersFromJson,
     seedFromJson,
     signIn,
     signOut,

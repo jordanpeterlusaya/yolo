@@ -1,0 +1,22 @@
+[
+  { "name": "dalali__kigamboni_mbavu", "phone": "0769 554 221", "areas": "Kigamboni", "active": true },
+  { "name": "dalali_kigamboni_simba_dsm", "phone": "0746 407 197", "areas": "Kigamboni, Kibada", "active": true },
+  { "name": "dalali_kigamboni_mahili", "phone": "0758 631 303", "areas": "Kigamboni", "active": true },
+  { "name": "dalali_kigamboni_rasi_namba_1", "phone": "0686 705 903", "areas": "Kigamboni", "active": true },
+  { "name": "dalali__saidi__kigamboni__dsm", "phone": "0787 701 266", "areas": "Kigamboni", "active": true },
+  { "name": "dalali_kigamboni_msauzi", "phone": "0756 588 268", "areas": "Kigamboni", "active": true },
+  { "name": "dalali_kigamboni_viwanja_", "phone": "0787 009 242", "areas": "Kigamboni", "active": true },
+  { "name": "viwanja_bora_kabisa_tz", "phone": "0767 053 517", "areas": "Kigamboni", "active": true },
+  { "name": "dalalidoktatz", "phone": "0626 529 397", "areas": "Kigamboni", "active": true },
+  { "name": "nyumba_kigamboni_tz_dsm", "phone": "0746 407 197", "areas": "Kigamboni", "active": true },
+  { "name": "dalali_salehe_mohamedi", "phone": "0712 058 357", "areas": "Kigamboni", "active": true },
+  { "name": "dalali_patrick_kimara_mbezi", "phone": "0672 673 363", "areas": "Kimara, Mbezi, Goba", "active": true },
+  { "name": "dalali_goba_madale_damasi", "phone": "0745 559 598", "areas": "Goba, Madale", "active": true },
+  { "name": "dalali_amani_kimara", "phone": "0787 205 300", "areas": "Kimara, Ubungo, Mbezi, Goba", "active": true },
+  { "name": "dalali_nyumba_goba", "phone": "0714 335 450", "areas": "Goba", "active": true },
+  { "name": "dalali_goba_festo_mbezi", "phone": "0714 539 608", "areas": "Goba, Mbezi", "active": true },
+  { "name": "dalaligoba_kakubwa", "phone": "0749 247 010", "areas": "Goba", "active": true },
+  { "name": "dalali_mwenge.sinza_mikocheni", "phone": "0625 873 687", "areas": "Mwenge, Sinza, Mikocheni", "active": true },
+  { "name": "dalali_dizzo_ubungo25_", "phone": "0677 370 515", "areas": "Ubungo, Kimara", "active": true },
+  { "name": "damalo_dalali_kimara_ubung_mbz", "phone": "0710 614 924", "areas": "Kimara, Ubungo, Mbezi", "active": true }
+]

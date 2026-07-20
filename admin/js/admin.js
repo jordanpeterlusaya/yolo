@@ -98,7 +98,7 @@ function showDashboard(user) {
   show(document.getElementById("authEmail"));
   showPanel(currentPanel);
   startListening();
-  loadCrmData();
+  loadCrmData().then(() => maybeAutoSeedBrokers());
 }
 
 async function loadCrmData() {
@@ -779,6 +779,38 @@ document.getElementById("refreshBrokersBtn")?.addEventListener("click", async ()
   brokers = await window.YoloFirebase.fetchBrokers();
   renderBrokers();
 });
+
+document.getElementById("seedBrokersBtn")?.addEventListener("click", async () => {
+  if (!confirm("Import seed madalali (20) into Supabase?")) return;
+  try {
+    const seed = await fetch("/shared/seed-brokers.json").then((r) => {
+      if (!r.ok) throw new Error("Could not load seed-brokers.json");
+      return r.json();
+    });
+    const n = await window.YoloFirebase.seedBrokersFromJson(seed);
+    brokers = await window.YoloFirebase.fetchBrokers();
+    renderBrokers();
+    alert(`Imported ${n} madalali.`);
+  } catch (err) {
+    alert(err.message || "Import failed — run shared/migrate-crm.sql in Supabase first if the table is missing.");
+  }
+});
+
+async function maybeAutoSeedBrokers() {
+  const params = new URLSearchParams(location.search);
+  if (params.get("seedBrokers") !== "1") return;
+  try {
+    const seed = await fetch("/shared/seed-brokers.json").then((r) => r.json());
+    const n = await window.YoloFirebase.seedBrokersFromJson(seed);
+    brokers = await window.YoloFirebase.fetchBrokers();
+    renderBrokers();
+    showPanel("brokers");
+    history.replaceState({}, "", "/admin/");
+    alert(`Imported ${n} madalali.`);
+  } catch (err) {
+    alert(err.message || "Auto-import failed");
+  }
+}
 
 document.getElementById("brokersBody").addEventListener("click", async (e) => {
   const editId = e.target.getAttribute("data-broker-edit");
