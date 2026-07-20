@@ -299,5 +299,125 @@
     "areas": "Ubungo, Kimara",
     "notes": "WhatsApp kupitia profile",
     "active": true
+  },
+  {
+    "name": "dalali_mbezi_beach_tz",
+    "phone": "0715 697 372",
+    "areas": "Mbezi Beach",
+    "active": true
+  },
+  {
+    "name": "dalali_kawe_house",
+    "phone": "0620 328 143",
+    "areas": "Kawe",
+    "active": true
+  },
+  {
+    "name": "dalali_goba_house",
+    "phone": "0745 559 598",
+    "areas": "Goba",
+    "active": true
+  },
+  {
+    "name": "dalali_mikocheni_home",
+    "phone": "0656 831 397",
+    "areas": "Mikocheni",
+    "active": true
+  },
+  {
+    "name": "dalali_masaki_oysterbay",
+    "phone": "0752 734 327",
+    "areas": "Masaki, Oysterbay",
+    "active": true
+  },
+  {
+    "name": "dalali_masani_homes",
+    "phone": "0787 388 212",
+    "areas": "Msasani, Masaki",
+    "active": true
+  },
+  {
+    "name": "dalali_sinza_rooms",
+    "phone": "0716 279 427",
+    "areas": "Sinza",
+    "active": true
+  },
+  {
+    "name": "dalali_tabata_houses",
+    "phone": "0755 454 251",
+    "areas": "Tabata",
+    "active": true
+  },
+  {
+    "name": "dalali_kimara_mbezi",
+    "phone": "0658 586 864",
+    "areas": "Kimara, Mbezi",
+    "active": true
+  },
+  {
+    "name": "dalali_ubungo_homes",
+    "phone": "0712 528 820",
+    "areas": "Ubungo",
+    "active": true
+  },
+  {
+    "name": "dalali_kibamba_house",
+    "phone": "0687 421 550",
+    "areas": "Kibamba",
+    "active": true
+  },
+  {
+    "name": "dalali_tegeta_home",
+    "phone": "0768 010 603",
+    "areas": "Tegeta",
+    "active": true
+  },
+  {
+    "name": "dalali_bunju_house",
+    "phone": "0756 432 910",
+    "areas": "Bunju",
+    "active": true
+  },
+  {
+    "name": "dalali_salasa_home",
+    "phone": "0692 406 639",
+    "areas": "Salasala",
+    "active": true
+  },
+  {
+    "name": "dalali_mbagala_house",
+    "phone": "0718 654 221",
+    "areas": "Mbagala",
+    "active": true
+  },
+  {
+    "name": "dalali_temeke_home",
+    "phone": "0748 390 612",
+    "areas": "Temeke",
+    "active": true
+  },
+  {
+    "name": "dalali_magomeni_house",
+    "phone": "0653 007 438",
+    "areas": "Magomeni",
+    "active": true
+  },
+  {
+    "name": "dalali_kurasini_home",
+    "phone": "0784 220 761",
+    "areas": "Kurasini",
+    "active": true
+  },
+  {
+    "name": "dalali_kigogo_rooms",
+    "phone": "0679 115 430",
+    "areas": "Kigogo",
+    "active": true
+  },
+  {
+    "name": "dalali_yombo_house",
+    "phone": "0766 903 512",
+    "areas": "Yombo",
+    "active": true
   }
 ]
