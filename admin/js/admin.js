@@ -690,9 +690,25 @@ function resetBrokerForm() {
   document.getElementById("brokerForm").reset();
   document.getElementById("brokerActive").checked = true;
   document.getElementById("brokerFormTitle").textContent = "Ongeza dalali";
-  hide(document.getElementById("brokerCancelBtn"));
   hide(brokerFormError);
   hide(brokerFormOk);
+}
+
+function openBrokerDrawer(edit = false) {
+  const drawer = document.getElementById("brokerDrawer");
+  const backdrop = document.getElementById("brokerDrawerBackdrop");
+  if (!edit) resetBrokerForm();
+  show(drawer);
+  show(backdrop);
+  document.body.classList.add("drawer-open");
+  setTimeout(() => document.getElementById("brokerName")?.focus(), 50);
+}
+
+function closeBrokerDrawer() {
+  hide(document.getElementById("brokerDrawer"));
+  hide(document.getElementById("brokerDrawerBackdrop"));
+  document.body.classList.remove("drawer-open");
+  resetBrokerForm();
 }
 
 function getBrokerFormData() {
@@ -706,39 +722,130 @@ function getBrokerFormData() {
   };
 }
 
+function brokerInitials(name) {
+  const parts = String(name || "")
+    .replace(/[._]+/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+  if (!parts.length) return "?";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function splitAreas(areas) {
+  return String(areas || "")
+    .split(",")
+    .map((a) => a.trim())
+    .filter(Boolean);
+}
+
+function collectBrokerAreas() {
+  const set = new Set();
+  brokers.forEach((b) => splitAreas(b.areas).forEach((a) => set.add(a)));
+  return [...set].sort((a, b) => a.localeCompare(b));
+}
+
+function syncBrokerAreaFilter() {
+  const select = document.getElementById("brokerAreaFilter");
+  if (!select) return;
+  const current = select.value;
+  const areas = collectBrokerAreas();
+  select.innerHTML =
+    `<option value="">Maeneo yote</option>` +
+    areas.map((a) => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join("");
+  if (areas.includes(current)) select.value = current;
+}
+
+function getFilteredBrokers() {
+  const q = (document.getElementById("brokerSearch")?.value || "").toLowerCase().trim();
+  const area = document.getElementById("brokerAreaFilter")?.value || "";
+  const status = document.getElementById("brokerStatusFilter")?.value || "";
+
+  return brokers.filter((b) => {
+    if (status === "active" && !b.active) return false;
+    if (status === "inactive" && b.active) return false;
+    if (area) {
+      const areas = splitAreas(b.areas).map((a) => a.toLowerCase());
+      if (!areas.includes(area.toLowerCase())) return false;
+    }
+    if (!q) return true;
+    const hay = [b.name, b.phone, b.email, b.areas, b.notes].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+}
+
+function updateBrokerStats() {
+  const active = brokers.filter((b) => b.active).length;
+  document.getElementById("brokerStatTotal").textContent = brokers.length;
+  document.getElementById("brokerStatActive").textContent = active;
+  document.getElementById("brokerStatInactive").textContent = brokers.length - active;
+  document.getElementById("brokerStatAreas").textContent = collectBrokerAreas().length;
+}
+
 function renderBrokers() {
-  document.getElementById("brokerCount").textContent = brokers.length;
-  const body = document.getElementById("brokersBody");
+  syncBrokerAreaFilter();
+  updateBrokerStats();
+
+  const grid = document.getElementById("brokersGrid");
   const empty = document.getElementById("emptyBrokers");
+  const emptySearch = document.getElementById("emptyBrokerSearch");
+  const visible = getFilteredBrokers();
+  const visibleEl = document.getElementById("brokerVisibleCount");
+  if (visibleEl) visibleEl.textContent = String(visible.length);
 
   if (!brokers.length) {
-    body.innerHTML = "";
+    grid.innerHTML = "";
     show(empty);
+    hide(emptySearch);
     return;
   }
   hide(empty);
 
-  body.innerHTML = brokers
-    .map(
-      (b) => `
-    <tr>
-      <td>
-        <div class="cell-stack">
-          <strong>${escapeHtml(b.name)}</strong>
-          ${b.email ? `<span>${escapeHtml(b.email)}</span>` : ""}
+  if (!visible.length) {
+    grid.innerHTML = "";
+    show(emptySearch);
+    return;
+  }
+  hide(emptySearch);
+
+  grid.innerHTML = visible
+    .map((b) => {
+      const areas = splitAreas(b.areas);
+      const areaChips = areas.length
+        ? areas.map((a) => `<span class="area-chip">${escapeHtml(a)}</span>`).join("")
+        : `<span class="area-chip muted">Hakuna eneo</span>`;
+      const phoneDigits = String(b.phone || "").replace(/\D/g, "");
+      let waHref = "";
+      if (phoneDigits) {
+        const intl = phoneDigits.startsWith("255")
+          ? phoneDigits
+          : phoneDigits.startsWith("0")
+            ? `255${phoneDigits.slice(1)}`
+            : `255${phoneDigits}`;
+        waHref = `https://wa.me/${intl}`;
+      }
+      const wa = waHref
+        ? `<a class="btn btn-ghost-sm broker-wa" href="${waHref}" target="_blank" rel="noopener">WhatsApp</a>`
+        : "";
+      return `
+      <article class="broker-card ${b.active ? "" : "is-inactive"}">
+        <div class="broker-card-top">
+          <div class="broker-avatar" aria-hidden="true">${escapeHtml(brokerInitials(b.name))}</div>
+          <div class="broker-id">
+            <h3 class="broker-name" title="${escapeHtml(b.name)}">${escapeHtml(b.name)}</h3>
+            <p class="broker-phone">${escapeHtml(b.phone)}</p>
+          </div>
+          <span class="status-pill ${b.active ? "active" : "inactive"}">${b.active ? "Active" : "Inactive"}</span>
         </div>
-      </td>
-      <td>${escapeHtml(b.phone)}</td>
-      <td>${escapeHtml(b.areas || "—")}</td>
-      <td><span class="status-pill ${b.active ? "active" : "inactive"}">${b.active ? "Active" : "Inactive"}</span></td>
-      <td>
-        <div class="row-actions">
+        <div class="broker-areas">${areaChips}</div>
+        ${b.email ? `<p class="broker-email">${escapeHtml(b.email)}</p>` : ""}
+        <div class="broker-card-actions">
+          ${wa}
           <button type="button" class="btn btn-secondary btn-sm" data-broker-edit="${b.id}">Edit</button>
           <button type="button" class="btn btn-danger btn-sm" data-broker-del="${b.id}">Delete</button>
         </div>
-      </td>
-    </tr>`
-    )
+      </article>`;
+    })
     .join("");
 }
 
@@ -753,11 +860,10 @@ function editBroker(id) {
   document.getElementById("brokerNotes").value = b.notes || "";
   document.getElementById("brokerActive").checked = !!b.active;
   document.getElementById("brokerFormTitle").textContent = "Hariri dalali";
-  show(document.getElementById("brokerCancelBtn"));
   hide(brokerFormError);
   hide(brokerFormOk);
   showPanel("brokers");
-  document.getElementById("brokerForm").scrollIntoView({ behavior: "smooth", block: "start" });
+  openBrokerDrawer(true);
 }
 
 document.getElementById("brokerForm").addEventListener("submit", async (e) => {
@@ -784,9 +890,9 @@ document.getElementById("brokerForm").addEventListener("submit", async (e) => {
       brokerFormOk.textContent = "Dalali ameongezwa.";
     }
     show(brokerFormOk);
-    resetBrokerForm();
     brokers = await window.YoloFirebase.fetchBrokers();
     renderBrokers();
+    setTimeout(() => closeBrokerDrawer(), 450);
   } catch (err) {
     brokerFormError.textContent = err.message || "Imeshindikana kuhifadhi.";
     show(brokerFormError);
@@ -795,7 +901,15 @@ document.getElementById("brokerForm").addEventListener("submit", async (e) => {
   }
 });
 
-document.getElementById("brokerCancelBtn").addEventListener("click", resetBrokerForm);
+document.getElementById("brokerCancelBtn").addEventListener("click", closeBrokerDrawer);
+document.getElementById("closeBrokerDrawerBtn")?.addEventListener("click", closeBrokerDrawer);
+document.getElementById("brokerDrawerBackdrop")?.addEventListener("click", closeBrokerDrawer);
+document.getElementById("openBrokerDrawerBtn")?.addEventListener("click", () => openBrokerDrawer(false));
+
+document.getElementById("brokerSearch")?.addEventListener("input", () => renderBrokers());
+document.getElementById("brokerAreaFilter")?.addEventListener("change", () => renderBrokers());
+document.getElementById("brokerStatusFilter")?.addEventListener("change", () => renderBrokers());
+
 document.getElementById("refreshBrokersBtn")?.addEventListener("click", async () => {
   brokers = await window.YoloFirebase.fetchBrokers();
   renderBrokers();
@@ -813,7 +927,7 @@ document.getElementById("seedBrokersBtn")?.addEventListener("click", async () =>
     renderBrokers();
     alert(`Imported ${n} madalali.`);
   } catch (err) {
-    alert(err.message || "Import failed — run shared/migrate-crm.sql in Supabase first if the table is missing.");
+    alert(err.message || "Import failed — run shared/setup-crm-and-seed-brokers.sql in Supabase first.");
   }
 });
 
@@ -833,7 +947,7 @@ async function maybeAutoSeedBrokers() {
   }
 }
 
-document.getElementById("brokersBody").addEventListener("click", async (e) => {
+document.getElementById("brokersGrid")?.addEventListener("click", async (e) => {
   const editId = e.target.getAttribute("data-broker-edit");
   const delId = e.target.getAttribute("data-broker-del");
   if (editId) {

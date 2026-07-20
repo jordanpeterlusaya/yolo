@@ -247,33 +247,86 @@
           <section class="admin-panel hidden" data-panel="brokers">
             <div class="dash-head">
               <div>
-                <h1>Madalali waliopo</h1>
-                <p class="sub">Orodha ya madalali wanaoshirikiana na YOLO — simu, maeneo na hali.</p>
+                <p class="section-kicker">CRM</p>
+                <h1>Madalali</h1>
+                <p class="sub">Tafuta, chuja na ongeza madalali kwa eneo na namba ya simu.</p>
               </div>
               <div class="dash-actions">
-                <button type="button" class="btn btn-secondary" id="seedBrokersBtn">Import seed madalali</button>
+                <button type="button" class="btn btn-secondary" id="seedBrokersBtn">Import seed</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="refreshBrokersBtn">Refresh</button>
+                <button type="button" class="btn btn-primary btn-inline" id="openBrokerDrawerBtn">+ Ongeza dalali</button>
               </div>
             </div>
 
-            <div class="layout layout-wide">
-              <form class="card-panel form-panel" id="brokerForm">
+            <div class="stat-grid" id="brokerStats">
+              <div class="stat-card">
+                <span class="stat-label">Jumla</span>
+                <strong class="stat-value" id="brokerStatTotal">0</strong>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Active</span>
+                <strong class="stat-value" id="brokerStatActive">0</strong>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Inactive</span>
+                <strong class="stat-value" id="brokerStatInactive">0</strong>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Maeneo</span>
+                <strong class="stat-value" id="brokerStatAreas">0</strong>
+              </div>
+            </div>
+
+            <div class="toolbar card-panel">
+              <div class="toolbar-search">
+                <label class="sr-only" for="brokerSearch">Tafuta dalali</label>
+                <input type="search" id="brokerSearch" placeholder="Tafuta jina, simu, au eneo…" autocomplete="off">
+              </div>
+              <div class="toolbar-filters">
+                <select id="brokerAreaFilter" aria-label="Chuja kwa eneo">
+                  <option value="">Maeneo yote</option>
+                </select>
+                <select id="brokerStatusFilter" aria-label="Chuja kwa hali">
+                  <option value="">Hali zote</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <p class="toolbar-meta"><span id="brokerVisibleCount">0</span> wanaonekana</p>
+            </div>
+
+            <div class="broker-grid" id="brokersGrid"></div>
+            <p class="empty empty-board hidden" id="emptyBrokers">Hakuna madalali bado. Bofya “Ongeza dalali” au Import seed.</p>
+            <p class="empty empty-board hidden" id="emptyBrokerSearch">Hakuna matokeo ya utafutaji. Jaribu jina au eneo lingine.</p>
+
+            <div class="drawer-backdrop hidden" id="brokerDrawerBackdrop"></div>
+            <aside class="drawer hidden" id="brokerDrawer" aria-labelledby="brokerFormTitle" aria-modal="true" role="dialog">
+              <div class="drawer-head">
                 <h2 id="brokerFormTitle">Ongeza dalali</h2>
+                <button type="button" class="drawer-close" id="closeBrokerDrawerBtn" aria-label="Funga">×</button>
+              </div>
+              <form class="drawer-body" id="brokerForm">
                 <input type="hidden" id="brokerEditId">
 
-                <label for="brokerName">Jina *</label>
-                <input type="text" id="brokerName" required placeholder="Jina la dalali">
+                <label for="brokerName">Jina / username *</label>
+                <input type="text" id="brokerName" required placeholder="mf. dalali_kigamboni_simba">
 
-                <label for="brokerPhone">Simu *</label>
-                <input type="tel" id="brokerPhone" required placeholder="0750 000 000">
-
-                <label for="brokerEmail">Barua pepe</label>
-                <input type="email" id="brokerEmail" placeholder="dalali@example.com">
+                <div class="row-2">
+                  <div>
+                    <label for="brokerPhone">Simu *</label>
+                    <input type="tel" id="brokerPhone" required placeholder="0750 000 000">
+                  </div>
+                  <div>
+                    <label for="brokerEmail">Barua pepe</label>
+                    <input type="email" id="brokerEmail" placeholder="hiari">
+                  </div>
+                </div>
 
                 <label for="brokerAreas">Maeneo anayofanya kazi</label>
-                <input type="text" id="brokerAreas" placeholder="Masaki, Oyster Bay, Mikocheni…">
+                <input type="text" id="brokerAreas" placeholder="Kigamboni, Kibada…">
 
                 <label for="brokerNotes">Maelezo</label>
-                <textarea id="brokerNotes" rows="2" placeholder="Maelezo ya ziada…"></textarea>
+                <textarea id="brokerNotes" rows="3" placeholder="Maelezo ya ziada…"></textarea>
 
                 <label class="check">
                   <input type="checkbox" id="brokerActive" checked> Dalali hai (active)
@@ -282,34 +335,12 @@
                 <p class="error hidden" id="brokerFormError"></p>
                 <p class="ok hidden" id="brokerFormOk"></p>
 
-                <div class="form-actions">
+                <div class="form-actions drawer-actions">
                   <button type="submit" class="btn btn-primary" id="brokerSaveBtn">Hifadhi dalali</button>
-                  <button type="button" class="btn btn-secondary hidden" id="brokerCancelBtn">Ghairi</button>
+                  <button type="button" class="btn btn-secondary" id="brokerCancelBtn">Ghairi</button>
                 </div>
               </form>
-
-              <div class="card-panel list-panel">
-                <div class="list-head">
-                  <h2>Madalali (<span id="brokerCount">0</span>)</h2>
-                  <button type="button" class="btn btn-secondary btn-sm" id="refreshBrokersBtn">Refresh</button>
-                </div>
-                <div class="table-wrap">
-                  <table class="admin-table data-table" id="brokersTable">
-                    <thead>
-                      <tr>
-                        <th>Jina</th>
-                        <th>Simu</th>
-                        <th>Maeneo</th>
-                        <th>Hali</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody id="brokersBody"></tbody>
-                  </table>
-                </div>
-                <p class="empty hidden" id="emptyBrokers">Hakuna madalali bado. Ongeza dalali wa kwanza hapo juu.</p>
-              </div>
-            </div>
+            </aside>
           </section>
         </div>
       </main>
