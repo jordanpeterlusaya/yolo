@@ -480,5 +480,71 @@
     "phone": "0715 697 372",
     "areas": "Mbezi Beach",
     "active": true
+  },
+  {
+    "name": "dalalimudy.msasani.masaki",
+    "phone": "0787 388 212",
+    "areas": "Msasani, Masaki",
+    "active": true
+  },
+  {
+    "name": "dalalimikocheni_masaki",
+    "phone": "0656 831 397",
+    "areas": "Mikocheni, Masaki",
+    "active": true
+  },
+  {
+    "name": "dalali_masaki_homes",
+    "phone": "0789 390 128",
+    "areas": "Masaki",
+    "active": true
+  },
+  {
+    "name": "dalali_oysterbay_homes",
+    "phone": "0658 890 651",
+    "areas": "Oysterbay",
+    "active": true
+  },
+  {
+    "name": "dalali_mbezi_beach_premium",
+    "phone": "0715 697 372",
+    "areas": "Mbezi Beach",
+    "active": true
+  },
+  {
+    "name": "dalali_kawe_premium",
+    "phone": "0620 328 143",
+    "areas": "Kawe",
+    "active": true
+  },
+  {
+    "name": "dalali_mikocheni_apartments",
+    "phone": "0746 178 918",
+    "areas": "Mikocheni",
+    "active": true
+  },
+  {
+    "name": "dalali_kijitonyama_homes",
+    "phone": "0682 341 126",
+    "areas": "Kijitonyama",
+    "active": true
+  },
+  {
+    "name": "dalali_upanga_homes",
+    "phone": "0758 442 190",
+    "areas": "Upanga",
+    "active": true
+  },
+  {
+    "name": "dalali_city_apartments",
+    "phone": "0719 330 455",
+    "areas": "City Centre",
+    "active": true
+  },
+  {
+    "name": "premiumhomes_dsm",
+    "phone": "0765 440 211",
+    "areas": "Dar premium areas",
+    "active": true
   }
 ]
