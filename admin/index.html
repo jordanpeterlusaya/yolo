@@ -185,44 +185,45 @@
 
             <div id="clientReminderBanner" class="reminder-banner hidden" role="status"></div>
 
+            <div class="client-metrics" id="clientStats">
+              <div class="metric-card">
+                <span class="metric-label">Jumla</span>
+                <strong class="metric-value" id="clientStatTotal">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Kuona (wiki 7)</span>
+                <strong class="metric-value" id="clientStatViewSoon">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Kuhama (wiki 7)</span>
+                <strong class="metric-value" id="clientStatMoveSoon">0</strong>
+              </div>
+              <div class="metric-card metric-alert">
+                <span class="metric-label">Kesho</span>
+                <strong class="metric-value" id="clientStatTomorrow">0</strong>
+              </div>
+            </div>
+
             <div class="client-board card-panel">
-              <div class="broker-board-bar">
-                <div class="broker-stats-inline" id="clientStats">
-                  <span><strong id="clientStatTotal">0</strong> jumla</span>
-                  <span class="dot">·</span>
-                  <span><strong id="clientStatViewSoon">0</strong> kuona karibu</span>
-                  <span class="dot">·</span>
-                  <span><strong id="clientStatMoveSoon">0</strong> kuhama karibu</span>
-                  <span class="dot">·</span>
-                  <span><strong id="clientStatTomorrow">0</strong> kesho</span>
+              <div class="client-board-toolbar">
+                <div class="client-tools">
+                  <input type="search" id="clientSearch" placeholder="Tafuta jina, simu, au eneo…" autocomplete="off" aria-label="Tafuta mteja">
+                  <select id="clientEventFilter" aria-label="Chuja kwa tukio">
+                    <option value="">Tukio zote</option>
+                    <option value="tomorrow">Kesho (arifa)</option>
+                    <option value="viewing">Zina viewing</option>
+                    <option value="move">Zinahamia</option>
+                    <option value="upcoming">Wiki 7 zijazo</option>
+                  </select>
+                  <select id="clientSort" aria-label="Panga">
+                    <option value="soonest">Tarehe karibu zaidi</option>
+                    <option value="name">Jina A–Z</option>
+                    <option value="newest">Waliowekwa hivi karibuni</option>
+                  </select>
                 </div>
                 <p class="toolbar-meta"><span id="clientVisibleCount">0</span> wanaonekana</p>
               </div>
 
-              <div class="broker-board-tools client-tools">
-                <input type="search" id="clientSearch" placeholder="Tafuta jina, simu, au eneo…" autocomplete="off" aria-label="Tafuta mteja">
-                <select id="clientEventFilter" aria-label="Chuja kwa tukio">
-                  <option value="">Tukio zote</option>
-                  <option value="tomorrow">Kesho (arifa)</option>
-                  <option value="viewing">Zina viewing</option>
-                  <option value="move">Zinahamia</option>
-                  <option value="upcoming">Wiki 7 zijazo</option>
-                </select>
-                <select id="clientSort" aria-label="Panga">
-                  <option value="soonest">Tarehe karibu zaidi</option>
-                  <option value="name">Jina A–Z</option>
-                  <option value="newest">Waliowekwa hivi karibuni</option>
-                </select>
-              </div>
-
-              <div class="client-list-head" aria-hidden="true">
-                <span class="c-col-name">Mteja</span>
-                <span class="c-col-area">Eneo</span>
-                <span class="c-col-budget">Budget</span>
-                <span class="c-col-view">Kuona nyumba</span>
-                <span class="c-col-move">Kuhama</span>
-                <span class="c-col-actions">Vitendo</span>
-              </div>
               <div class="client-list" id="clientsGrid"></div>
               <p class="empty empty-board hidden" id="emptyClients">Hakuna wateja bado. Bofya “Ongeza mteja”.</p>
               <p class="empty empty-board hidden" id="emptyClientSearch">Hakuna matokeo. Badilisha utafutaji au filter.</p>

@@ -667,23 +667,31 @@ function updateClientStats() {
 
 function eventBadge(dateStr, label) {
   const d = daysUntil(dateStr);
-  if (d == null) return `<span class="event-muted">—</span>`;
-  let cls = "event-chip";
-  let extra = formatDate(dateStr);
-  if (d < 0) {
-    cls += " past";
-    extra += " · imepita";
-  } else if (d === 0) {
-    cls += " today";
-    extra += " · leo";
-  } else if (d === 1) {
-    cls += " tomorrow";
-    extra += " · kesho";
-  } else if (d <= 7) {
-    cls += " soon";
-    extra += ` · siku ${d}`;
+  if (d == null) {
+    return `<div class="date-cell empty"><span class="date-label">${escapeHtml(label)}</span><span class="date-value">Haijawekwa</span></div>`;
   }
-  return `<span class="${cls}" title="${escapeHtml(label)}">${escapeHtml(extra)}</span>`;
+  let state = "normal";
+  let hint = "";
+  if (d < 0) {
+    state = "past";
+    hint = "Imepita";
+  } else if (d === 0) {
+    state = "today";
+    hint = "Leo";
+  } else if (d === 1) {
+    state = "tomorrow";
+    hint = "Kesho";
+  } else if (d <= 7) {
+    state = "soon";
+    hint = `Siku ${d}`;
+  } else {
+    hint = `Siku ${d}`;
+  }
+  return `<div class="date-cell ${state}">
+    <span class="date-label">${escapeHtml(label)}</span>
+    <span class="date-value">${escapeHtml(formatDate(dateStr))}</span>
+    <span class="date-hint">${escapeHtml(hint)}</span>
+  </div>`;
 }
 
 function renderClients() {
@@ -714,31 +722,59 @@ function renderClients() {
 
   grid.innerHTML = visible
     .map((c) => {
-      const alert =
+      const urgency =
         daysUntil(c.viewingDate) === 1 || daysUntil(c.moveDate) === 1
-          ? '<span class="remind-tag">Arifa kesho</span>'
+          ? "is-tomorrow"
           : daysUntil(c.viewingDate) === 0 || daysUntil(c.moveDate) === 0
-            ? '<span class="remind-tag today">Leo</span>'
+            ? "is-today"
             : "";
+      const phoneDigits = String(c.phone || "").replace(/\D/g, "");
+      let wa = "";
+      if (phoneDigits && phoneDigits.length >= 9) {
+        const intl = phoneDigits.startsWith("255")
+          ? phoneDigits
+          : phoneDigits.startsWith("0")
+            ? `255${phoneDigits.slice(1)}`
+            : `255${phoneDigits}`;
+        wa = `<a class="client-action soft" href="https://wa.me/${intl}" target="_blank" rel="noopener">WhatsApp</a>`;
+      }
+      const notes = c.notes
+        ? `<p class="client-notes">${escapeHtml(c.notes)}</p>`
+        : "";
       return `
-      <div class="client-row">
-        <div class="c-col-name">
-          <div class="broker-avatar sm" aria-hidden="true">${escapeHtml(brokerInitials(c.clientName))}</div>
-          <div class="broker-id">
-            <strong class="broker-name">${escapeHtml(c.clientName)}</strong>
-            ${c.phone ? `<span class="broker-email">${escapeHtml(c.phone)}</span>` : ""}
-            ${alert}
+      <article class="client-card ${urgency}">
+        <div class="client-card-main">
+          <div class="client-identity">
+            <div class="client-avatar" aria-hidden="true">${escapeHtml(brokerInitials(c.clientName))}</div>
+            <div class="client-copy">
+              <div class="client-name-row">
+                <h3 class="client-name">${escapeHtml(c.clientName)}</h3>
+                ${urgency === "is-tomorrow" ? '<span class="status-flag tomorrow">Kesho</span>' : ""}
+                ${urgency === "is-today" ? '<span class="status-flag today">Leo</span>' : ""}
+              </div>
+              <p class="client-meta">
+                <span>${escapeHtml(c.preferredArea || "Eneo halijawekwa")}</span>
+                ${c.phone ? `<span class="meta-sep">·</span><span>${escapeHtml(c.phone)}</span>` : ""}
+              </p>
+              ${notes}
+            </div>
+          </div>
+          <div class="client-budget-block">
+            <span class="budget-label">Budget</span>
+            <strong class="budget-value">${formatBudget(c.budget)}</strong>
+            <span class="budget-unit">/ mwezi</span>
           </div>
         </div>
-        <div class="c-col-area">${escapeHtml(c.preferredArea || "—")}</div>
-        <div class="c-col-budget">${formatBudget(c.budget)}</div>
-        <div class="c-col-view">${eventBadge(c.viewingDate, "Kuona nyumba")}</div>
-        <div class="c-col-move">${eventBadge(c.moveDate, "Kuhama")}</div>
-        <div class="c-col-actions">
-          <button type="button" class="link-action" data-client-edit="${c.id}">Edit</button>
-          <button type="button" class="link-action danger" data-client-del="${c.id}">Delete</button>
+        <div class="client-card-dates">
+          ${eventBadge(c.viewingDate, "Kuona nyumba")}
+          ${eventBadge(c.moveDate, "Kuhama")}
         </div>
-      </div>`;
+        <div class="client-card-actions">
+          ${wa}
+          <button type="button" class="client-action" data-client-edit="${c.id}">Hariri</button>
+          <button type="button" class="client-action danger" data-client-del="${c.id}">Futa</button>
+        </div>
+      </article>`;
     })
     .join("");
 }
