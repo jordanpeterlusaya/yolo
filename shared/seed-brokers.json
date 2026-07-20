@@ -419,5 +419,66 @@
     "phone": "0766 903 512",
     "areas": "Yombo",
     "active": true
+  },
+  {
+    "name": "dalali_ubungo.tz",
+    "phone": "0712 528 820",
+    "areas": "Ubungo",
+    "active": true
+  },
+  {
+    "name": "dalali_dizzo_ubungo25",
+    "phone": "0677 370 515",
+    "areas": "Ubungo",
+    "active": true
+  },
+  {
+    "name": "dalali_mikocheni_masaki",
+    "phone": "0656 831 397",
+    "areas": "Mikocheni",
+    "active": true
+  },
+  {
+    "name": "kibopile_properties",
+    "phone": "0777 262 048",
+    "areas": "Mikocheni, Masaki",
+    "active": true
+  },
+  {
+    "name": "dalali_nyumba_za_kisasa_dsm",
+    "phone": "0659 336 751",
+    "areas": "Dar es Salaam",
+    "active": true,
+    "notes": "Middle class houses"
+  },
+  {
+    "name": "dalalimakumbusho_mwananyamala",
+    "phone": "0747 196 597",
+    "areas": "Makumbusho, Mwananyamala",
+    "active": true
+  },
+  {
+    "name": "dalali_tabata",
+    "phone": "0755 454 251",
+    "areas": "Tabata",
+    "active": true
+  },
+  {
+    "name": "dalali_tegeta",
+    "phone": "0768 010 603",
+    "areas": "Tegeta",
+    "active": true
+  },
+  {
+    "name": "dalali_goba_madale",
+    "phone": "0745 559 598",
+    "areas": "Goba",
+    "active": true
+  },
+  {
+    "name": "dalalimbezibeach",
+    "phone": "0715 697 372",
+    "areas": "Mbezi Beach",
+    "active": true
   }
 ]
