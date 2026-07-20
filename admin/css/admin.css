@@ -794,7 +794,7 @@ input:focus, textarea:focus, select:focus {
 
 .broker-board {
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .broker-board-bar {
@@ -866,8 +866,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .broker-list {
-  max-height: min(62vh, 720px);
-  overflow-y: auto;
+  overflow: visible;
 }
 
 .broker-row {
