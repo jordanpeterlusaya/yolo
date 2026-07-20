@@ -98,13 +98,20 @@ function showDashboard(user) {
   show(document.getElementById("authEmail"));
   showPanel(currentPanel);
   startListening();
-  loadCrmData().then(() => maybeAutoSeedBrokers());
+  loadCrmData().then(() => {
+    maybeAutoSeedBrokers();
+    checkClientReminders({ notify: true });
+  });
+  if (!window.__clientReminderTimer) {
+    window.__clientReminderTimer = setInterval(() => checkClientReminders({ notify: true }), 60 * 60 * 1000);
+  }
 }
 
 async function loadCrmData() {
   try {
     clientLeads = await window.YoloFirebase.fetchClientLeads();
     renderClients();
+    checkClientReminders({ notify: false });
   } catch (err) {
     console.error(err);
     clientLeads = [];
@@ -543,14 +550,56 @@ document.getElementById("sidebarBackdrop")?.addEventListener("click", closeSideb
 /* ——— Client leads ——— */
 const clientFormError = document.getElementById("clientFormError");
 const clientFormOk = document.getElementById("clientFormOk");
+const REMINDER_STORE_KEY = "yolo_client_reminders_shown";
+
+function todayYmd() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function addDaysYmd(ymd, days) {
+  const d = new Date(ymd + "T12:00:00");
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const today = new Date(todayYmd() + "T12:00:00");
+  const target = new Date(String(dateStr).slice(0, 10) + "T12:00:00");
+  if (Number.isNaN(target.getTime())) return null;
+  return Math.round((target - today) / 86400000);
+}
+
+function soonestEventDays(c) {
+  const opts = [daysUntil(c.viewingDate), daysUntil(c.moveDate)].filter((n) => n != null && n >= 0);
+  if (!opts.length) return Infinity;
+  return Math.min(...opts);
+}
 
 function resetClientForm() {
   document.getElementById("clientEditId").value = "";
   document.getElementById("clientForm").reset();
   document.getElementById("clientFormTitle").textContent = "Ongeza mteja";
-  hide(document.getElementById("clientCancelBtn"));
   hide(clientFormError);
   hide(clientFormOk);
+}
+
+function openClientDrawer(edit = false) {
+  const drawer = document.getElementById("clientDrawer");
+  const backdrop = document.getElementById("clientDrawerBackdrop");
+  if (!edit) resetClientForm();
+  show(drawer);
+  show(backdrop);
+  document.body.classList.add("drawer-open");
+  setTimeout(() => document.getElementById("clientName")?.focus(), 50);
+}
+
+function closeClientDrawer() {
+  hide(document.getElementById("clientDrawer"));
+  hide(document.getElementById("clientDrawerBackdrop"));
+  document.body.classList.remove("drawer-open");
+  resetClientForm();
 }
 
 function getClientFormData() {
@@ -565,41 +614,269 @@ function getClientFormData() {
   };
 }
 
+function getFilteredClients() {
+  const q = (document.getElementById("clientSearch")?.value || "").toLowerCase().trim();
+  const event = document.getElementById("clientEventFilter")?.value || "";
+  const sort = document.getElementById("clientSort")?.value || "soonest";
+
+  let list = clientLeads.filter((c) => {
+    if (event === "tomorrow") {
+      const v = daysUntil(c.viewingDate);
+      const m = daysUntil(c.moveDate);
+      if (v !== 1 && m !== 1) return false;
+    } else if (event === "viewing") {
+      if (!c.viewingDate) return false;
+    } else if (event === "move") {
+      if (!c.moveDate) return false;
+    } else if (event === "upcoming") {
+      const v = daysUntil(c.viewingDate);
+      const m = daysUntil(c.moveDate);
+      const soon = [v, m].some((n) => n != null && n >= 0 && n <= 7);
+      if (!soon) return false;
+    }
+    if (!q) return true;
+    const hay = [c.clientName, c.phone, c.preferredArea, c.notes].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+
+  if (sort === "name") {
+    list.sort((a, b) => a.clientName.localeCompare(b.clientName, undefined, { sensitivity: "base" }));
+  } else if (sort === "newest") {
+    list.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+  } else {
+    list.sort((a, b) => soonestEventDays(a) - soonestEventDays(b) || a.clientName.localeCompare(b.clientName));
+  }
+  return list;
+}
+
+function updateClientStats() {
+  const tomorrow = clientLeads.filter((c) => daysUntil(c.viewingDate) === 1 || daysUntil(c.moveDate) === 1).length;
+  const viewSoon = clientLeads.filter((c) => {
+    const d = daysUntil(c.viewingDate);
+    return d != null && d >= 0 && d <= 7;
+  }).length;
+  const moveSoon = clientLeads.filter((c) => {
+    const d = daysUntil(c.moveDate);
+    return d != null && d >= 0 && d <= 7;
+  }).length;
+  document.getElementById("clientStatTotal").textContent = clientLeads.length;
+  document.getElementById("clientStatViewSoon").textContent = viewSoon;
+  document.getElementById("clientStatMoveSoon").textContent = moveSoon;
+  document.getElementById("clientStatTomorrow").textContent = tomorrow;
+}
+
+function eventBadge(dateStr, label) {
+  const d = daysUntil(dateStr);
+  if (d == null) return `<span class="event-muted">—</span>`;
+  let cls = "event-chip";
+  let extra = formatDate(dateStr);
+  if (d < 0) {
+    cls += " past";
+    extra += " · imepita";
+  } else if (d === 0) {
+    cls += " today";
+    extra += " · leo";
+  } else if (d === 1) {
+    cls += " tomorrow";
+    extra += " · kesho";
+  } else if (d <= 7) {
+    cls += " soon";
+    extra += ` · siku ${d}`;
+  }
+  return `<span class="${cls}" title="${escapeHtml(label)}">${escapeHtml(extra)}</span>`;
+}
+
 function renderClients() {
-  document.getElementById("clientCount").textContent = clientLeads.length;
-  const body = document.getElementById("clientsBody");
+  updateClientStats();
+  renderClientReminderBanner();
+
+  const grid = document.getElementById("clientsGrid");
   const empty = document.getElementById("emptyClients");
+  const emptySearch = document.getElementById("emptyClientSearch");
+  const visible = getFilteredClients();
+  const visibleEl = document.getElementById("clientVisibleCount");
+  if (visibleEl) visibleEl.textContent = String(visible.length);
 
   if (!clientLeads.length) {
-    body.innerHTML = "";
+    grid.innerHTML = "";
     show(empty);
+    hide(emptySearch);
     return;
   }
   hide(empty);
 
-  body.innerHTML = clientLeads
+  if (!visible.length) {
+    grid.innerHTML = "";
+    show(emptySearch);
+    return;
+  }
+  hide(emptySearch);
+
+  grid.innerHTML = visible
+    .map((c) => {
+      const alert =
+        daysUntil(c.viewingDate) === 1 || daysUntil(c.moveDate) === 1
+          ? '<span class="remind-tag">Arifa kesho</span>'
+          : daysUntil(c.viewingDate) === 0 || daysUntil(c.moveDate) === 0
+            ? '<span class="remind-tag today">Leo</span>'
+            : "";
+      return `
+      <div class="client-row">
+        <div class="c-col-name">
+          <div class="broker-avatar sm" aria-hidden="true">${escapeHtml(brokerInitials(c.clientName))}</div>
+          <div class="broker-id">
+            <strong class="broker-name">${escapeHtml(c.clientName)}</strong>
+            ${c.phone ? `<span class="broker-email">${escapeHtml(c.phone)}</span>` : ""}
+            ${alert}
+          </div>
+        </div>
+        <div class="c-col-area">${escapeHtml(c.preferredArea || "—")}</div>
+        <div class="c-col-budget">${formatBudget(c.budget)}</div>
+        <div class="c-col-view">${eventBadge(c.viewingDate, "Kuona nyumba")}</div>
+        <div class="c-col-move">${eventBadge(c.moveDate, "Kuhama")}</div>
+        <div class="c-col-actions">
+          <button type="button" class="link-action" data-client-edit="${c.id}">Edit</button>
+          <button type="button" class="link-action danger" data-client-del="${c.id}">Delete</button>
+        </div>
+      </div>`;
+    })
+    .join("");
+}
+
+function getUpcomingReminders() {
+  const items = [];
+  clientLeads.forEach((c) => {
+    const v = daysUntil(c.viewingDate);
+    const m = daysUntil(c.moveDate);
+    if (v === 1) {
+      items.push({
+        id: `${c.id}:viewing:${c.viewingDate}`,
+        clientId: c.id,
+        name: c.clientName,
+        type: "kuona nyumba",
+        date: c.viewingDate,
+        when: "kesho",
+      });
+    }
+    if (m === 1) {
+      items.push({
+        id: `${c.id}:move:${c.moveDate}`,
+        clientId: c.id,
+        name: c.clientName,
+        type: "kuhama",
+        date: c.moveDate,
+        when: "kesho",
+      });
+    }
+    if (v === 0) {
+      items.push({
+        id: `${c.id}:viewing-today:${c.viewingDate}`,
+        clientId: c.id,
+        name: c.clientName,
+        type: "kuona nyumba",
+        date: c.viewingDate,
+        when: "leo",
+      });
+    }
+    if (m === 0) {
+      items.push({
+        id: `${c.id}:move-today:${c.moveDate}`,
+        clientId: c.id,
+        name: c.clientName,
+        type: "kuhama",
+        date: c.moveDate,
+        when: "leo",
+      });
+    }
+  });
+  return items;
+}
+
+function loadShownReminders() {
+  try {
+    return JSON.parse(localStorage.getItem(REMINDER_STORE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function markReminderShown(id) {
+  const shown = loadShownReminders();
+  shown[id] = todayYmd();
+  localStorage.setItem(REMINDER_STORE_KEY, JSON.stringify(shown));
+}
+
+function showToast(message, { tone = "info", timeout = 8000 } = {}) {
+  const stack = document.getElementById("toastStack");
+  if (!stack) return;
+  const el = document.createElement("div");
+  el.className = `toast toast-${tone}`;
+  el.innerHTML = `<p>${message}</p><button type="button" class="toast-close" aria-label="Funga">×</button>`;
+  el.querySelector(".toast-close").addEventListener("click", () => el.remove());
+  stack.appendChild(el);
+  if (timeout) setTimeout(() => el.remove(), timeout);
+}
+
+function renderClientReminderBanner() {
+  const banner = document.getElementById("clientReminderBanner");
+  if (!banner) return;
+  const items = getUpcomingReminders().filter((i) => i.when === "kesho" || i.when === "leo");
+  if (!items.length) {
+    hide(banner);
+    banner.innerHTML = "";
+    return;
+  }
+  const lines = items
     .map(
-      (c) => `
-    <tr>
-      <td>
-        <div class="cell-stack">
-          <strong>${escapeHtml(c.clientName)}</strong>
-          ${c.phone ? `<span>${escapeHtml(c.phone)}</span>` : ""}
-        </div>
-      </td>
-      <td>${formatDate(c.moveDate)}</td>
-      <td>${formatDate(c.viewingDate)}</td>
-      <td class="cell-budget">${formatBudget(c.budget)}</td>
-      <td>${escapeHtml(c.preferredArea)}</td>
-      <td>
-        <div class="row-actions">
-          <button type="button" class="btn btn-secondary btn-sm" data-client-edit="${c.id}">Edit</button>
-          <button type="button" class="btn btn-danger btn-sm" data-client-del="${c.id}">Delete</button>
-        </div>
-      </td>
-    </tr>`
+      (i) =>
+        `<li><strong>${escapeHtml(i.name)}</strong> — ${escapeHtml(i.type)} <em>${escapeHtml(i.when)}</em> (${escapeHtml(formatDate(i.date))})</li>`
     )
     .join("");
+  banner.innerHTML = `
+    <div class="reminder-banner-inner">
+      <div>
+        <p class="reminder-title">Arifa za wateja</p>
+        <ul>${lines}</ul>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" id="dismissReminderBanner">Ficha</button>
+    </div>`;
+  show(banner);
+  document.getElementById("dismissReminderBanner")?.addEventListener("click", () => hide(banner));
+}
+
+async function ensureNotificationPermission() {
+  if (!("Notification" in window)) return false;
+  if (Notification.permission === "granted") return true;
+  if (Notification.permission === "denied") return false;
+  const result = await Notification.requestPermission();
+  return result === "granted";
+}
+
+async function checkClientReminders({ notify = false } = {}) {
+  const items = getUpcomingReminders();
+  renderClientReminderBanner();
+  if (!notify || !items.length) return;
+
+  const shown = loadShownReminders();
+  const fresh = items.filter((i) => shown[i.id] !== todayYmd());
+  if (!fresh.length) return;
+
+  const canNotify = "Notification" in window && Notification.permission === "granted";
+  fresh.forEach((i) => {
+    const msg = `${i.name}: ${i.type} ni ${i.when} (${formatDate(i.date)})`;
+    showToast(msg, { tone: i.when === "kesho" ? "warn" : "info" });
+    if (canNotify) {
+      try {
+        new Notification("YOLO — Arifa ya mteja", {
+          body: msg,
+          tag: i.id,
+        });
+      } catch (_) {
+        /* ignore */
+      }
+    }
+    markReminderShown(i.id);
+  });
 }
 
 function editClient(id) {
@@ -614,11 +891,10 @@ function editClient(id) {
   document.getElementById("preferredArea").value = c.preferredArea;
   document.getElementById("clientNotes").value = c.notes || "";
   document.getElementById("clientFormTitle").textContent = "Hariri mteja";
-  show(document.getElementById("clientCancelBtn"));
   hide(clientFormError);
   hide(clientFormOk);
   showPanel("clients");
-  document.getElementById("clientForm").scrollIntoView({ behavior: "smooth", block: "start" });
+  openClientDrawer(true);
 }
 
 document.getElementById("clientForm").addEventListener("submit", async (e) => {
@@ -645,9 +921,10 @@ document.getElementById("clientForm").addEventListener("submit", async (e) => {
       clientFormOk.textContent = "Mteja ameongezwa.";
     }
     show(clientFormOk);
-    resetClientForm();
     clientLeads = await window.YoloFirebase.fetchClientLeads();
     renderClients();
+    checkClientReminders({ notify: false });
+    setTimeout(() => closeClientDrawer(), 450);
   } catch (err) {
     clientFormError.textContent = err.message || "Imeshindikana kuhifadhi.";
     show(clientFormError);
@@ -656,13 +933,32 @@ document.getElementById("clientForm").addEventListener("submit", async (e) => {
   }
 });
 
-document.getElementById("clientCancelBtn").addEventListener("click", resetClientForm);
+document.getElementById("clientCancelBtn").addEventListener("click", closeClientDrawer);
+document.getElementById("closeClientDrawerBtn")?.addEventListener("click", closeClientDrawer);
+document.getElementById("clientDrawerBackdrop")?.addEventListener("click", closeClientDrawer);
+document.getElementById("openClientDrawerBtn")?.addEventListener("click", () => openClientDrawer(false));
+
+document.getElementById("clientSearch")?.addEventListener("input", () => renderClients());
+document.getElementById("clientEventFilter")?.addEventListener("change", () => renderClients());
+document.getElementById("clientSort")?.addEventListener("change", () => renderClients());
+
+document.getElementById("enableClientNotifsBtn")?.addEventListener("click", async () => {
+  const ok = await ensureNotificationPermission();
+  if (ok) {
+    showToast("Arifa za browser zimeruhusiwa. Utakumbushwa siku 1 kabla.", { tone: "ok" });
+    checkClientReminders({ notify: true });
+  } else {
+    showToast("Ruhusa ya arifa imekataliwa. Bado utaona banner ndani ya admin.", { tone: "warn" });
+  }
+});
+
 document.getElementById("refreshClientsBtn")?.addEventListener("click", async () => {
   clientLeads = await window.YoloFirebase.fetchClientLeads();
   renderClients();
+  checkClientReminders({ notify: true });
 });
 
-document.getElementById("clientsBody").addEventListener("click", async (e) => {
+document.getElementById("clientsGrid")?.addEventListener("click", async (e) => {
   const editId = e.target.getAttribute("data-client-edit");
   const delId = e.target.getAttribute("data-client-del");
   if (editId) {
@@ -675,6 +971,7 @@ document.getElementById("clientsBody").addEventListener("click", async (e) => {
       await window.YoloFirebase.deleteClientLead(delId);
       clientLeads = await window.YoloFirebase.fetchClientLeads();
       renderClients();
+      checkClientReminders({ notify: false });
     } catch (err) {
       alert(err.message || "Delete failed");
     }

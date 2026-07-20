@@ -171,32 +171,88 @@
 
           <!-- Client leads -->
           <section class="admin-panel hidden" data-panel="clients">
-            <div class="dash-head">
+            <div class="dash-head clients-head">
               <div>
-                <h1>Data ya wateja</h1>
-                <p class="sub">Weka taarifa ulizokusanya kutoka kwa wateja — hamia lini, kuona nyumba lini, budget na eneo.</p>
+                <h1>Wateja</h1>
+                <p class="sub">Rekodi taarifa, budget, na tarehe muhimu. Utakumbushwa siku 1 kabla ya kuona nyumba au kuhama.</p>
+              </div>
+              <div class="dash-actions">
+                <button type="button" class="btn btn-secondary btn-sm" id="refreshClientsBtn">Refresh</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="enableClientNotifsBtn">Ruhusu arifa</button>
+                <button type="button" class="btn btn-primary btn-inline" id="openClientDrawerBtn">+ Ongeza mteja</button>
               </div>
             </div>
 
-            <div class="layout layout-wide">
-              <form class="card-panel form-panel" id="clientForm">
+            <div id="clientReminderBanner" class="reminder-banner hidden" role="status"></div>
+
+            <div class="client-board card-panel">
+              <div class="broker-board-bar">
+                <div class="broker-stats-inline" id="clientStats">
+                  <span><strong id="clientStatTotal">0</strong> jumla</span>
+                  <span class="dot">·</span>
+                  <span><strong id="clientStatViewSoon">0</strong> kuona karibu</span>
+                  <span class="dot">·</span>
+                  <span><strong id="clientStatMoveSoon">0</strong> kuhama karibu</span>
+                  <span class="dot">·</span>
+                  <span><strong id="clientStatTomorrow">0</strong> kesho</span>
+                </div>
+                <p class="toolbar-meta"><span id="clientVisibleCount">0</span> wanaonekana</p>
+              </div>
+
+              <div class="broker-board-tools client-tools">
+                <input type="search" id="clientSearch" placeholder="Tafuta jina, simu, au eneo…" autocomplete="off" aria-label="Tafuta mteja">
+                <select id="clientEventFilter" aria-label="Chuja kwa tukio">
+                  <option value="">Tukio zote</option>
+                  <option value="tomorrow">Kesho (arifa)</option>
+                  <option value="viewing">Zina viewing</option>
+                  <option value="move">Zinahamia</option>
+                  <option value="upcoming">Wiki 7 zijazo</option>
+                </select>
+                <select id="clientSort" aria-label="Panga">
+                  <option value="soonest">Tarehe karibu zaidi</option>
+                  <option value="name">Jina A–Z</option>
+                  <option value="newest">Waliowekwa hivi karibuni</option>
+                </select>
+              </div>
+
+              <div class="client-list-head" aria-hidden="true">
+                <span class="c-col-name">Mteja</span>
+                <span class="c-col-area">Eneo</span>
+                <span class="c-col-budget">Budget</span>
+                <span class="c-col-view">Kuona nyumba</span>
+                <span class="c-col-move">Kuhama</span>
+                <span class="c-col-actions">Vitendo</span>
+              </div>
+              <div class="client-list" id="clientsGrid"></div>
+              <p class="empty empty-board hidden" id="emptyClients">Hakuna wateja bado. Bofya “Ongeza mteja”.</p>
+              <p class="empty empty-board hidden" id="emptyClientSearch">Hakuna matokeo. Badilisha utafutaji au filter.</p>
+            </div>
+
+            <div class="drawer-backdrop hidden" id="clientDrawerBackdrop"></div>
+            <aside class="drawer hidden" id="clientDrawer" aria-labelledby="clientFormTitle" aria-modal="true" role="dialog">
+              <div class="drawer-head">
                 <h2 id="clientFormTitle">Ongeza mteja</h2>
+                <button type="button" class="drawer-close" id="closeClientDrawerBtn" aria-label="Funga">×</button>
+              </div>
+              <form class="drawer-body" id="clientForm">
                 <input type="hidden" id="clientEditId">
 
                 <label for="clientName">Jina la mteja *</label>
                 <input type="text" id="clientName" required placeholder="Jina kamili">
 
-                <label for="clientPhone">Simu</label>
+                <label for="clientPhone">Simu / WhatsApp</label>
                 <input type="tel" id="clientPhone" placeholder="0750 000 000">
 
                 <div class="row-2">
                   <div>
-                    <label for="moveDate">Anahamia lini</label>
-                    <input type="date" id="moveDate">
-                  </div>
-                  <div>
                     <label for="viewingDate">Mpango wa kuona nyumba</label>
                     <input type="date" id="viewingDate">
+                    <p class="field-hint">Utakumbushwa siku 1 kabla</p>
+                  </div>
+                  <div>
+                    <label for="moveDate">Anahamia lini</label>
+                    <input type="date" id="moveDate">
+                    <p class="field-hint">Utakumbushwa siku 1 kabla</p>
                   </div>
                 </div>
 
@@ -207,40 +263,17 @@
                 <input type="text" id="preferredArea" required placeholder="Masaki, Mikocheni, Upanga…">
 
                 <label for="clientNotes">Maelezo zaidi</label>
-                <textarea id="clientNotes" rows="3" placeholder="Aina ya nyumba, idadi ya vyumba, maelezo mengine…"></textarea>
+                <textarea id="clientNotes" rows="3" placeholder="Aina ya nyumba, idadi ya vyumba…"></textarea>
 
                 <p class="error hidden" id="clientFormError"></p>
                 <p class="ok hidden" id="clientFormOk"></p>
 
-                <div class="form-actions">
+                <div class="form-actions drawer-actions">
                   <button type="submit" class="btn btn-primary" id="clientSaveBtn">Hifadhi mteja</button>
-                  <button type="button" class="btn btn-secondary hidden" id="clientCancelBtn">Ghairi</button>
+                  <button type="button" class="btn btn-secondary" id="clientCancelBtn">Ghairi</button>
                 </div>
               </form>
-
-              <div class="card-panel list-panel">
-                <div class="list-head">
-                  <h2>Wateja (<span id="clientCount">0</span>)</h2>
-                  <button type="button" class="btn btn-secondary btn-sm" id="refreshClientsBtn">Refresh</button>
-                </div>
-                <div class="table-wrap">
-                  <table class="admin-table data-table" id="clientsTable">
-                    <thead>
-                      <tr>
-                        <th>Mteja</th>
-                        <th>Hamia</th>
-                        <th>Kuona nyumba</th>
-                        <th>Budget</th>
-                        <th>Eneo</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody id="clientsBody"></tbody>
-                  </table>
-                </div>
-                <p class="empty hidden" id="emptyClients">Hakuna wateja bado. Ongeza taarifa za kwanza hapo juu.</p>
-              </div>
-            </div>
+            </aside>
           </section>
 
           <!-- Brokers -->
@@ -342,6 +375,8 @@
       </main>
     </div>
   </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/shared/supabase-config.js"></script>
