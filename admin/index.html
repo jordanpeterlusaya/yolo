@@ -245,44 +245,34 @@
 
           <!-- Brokers -->
           <section class="admin-panel hidden" data-panel="brokers">
-            <div class="dash-head">
+            <div class="dash-head brokers-head">
               <div>
-                <p class="section-kicker">CRM</p>
                 <h1>Madalali</h1>
-                <p class="sub">Tafuta, chuja na ongeza madalali kwa eneo na namba ya simu.</p>
+                <p class="sub">Orodha kwa jina (A–Z). Tafuta au chuja, kisha ongeza mpya ukihitaji.</p>
               </div>
               <div class="dash-actions">
-                <button type="button" class="btn btn-secondary" id="seedBrokersBtn">Import seed</button>
                 <button type="button" class="btn btn-secondary btn-sm" id="refreshBrokersBtn">Refresh</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="seedBrokersBtn">Import seed</button>
                 <button type="button" class="btn btn-primary btn-inline" id="openBrokerDrawerBtn">+ Ongeza dalali</button>
               </div>
             </div>
 
-            <div class="stat-grid" id="brokerStats">
-              <div class="stat-card">
-                <span class="stat-label">Jumla</span>
-                <strong class="stat-value" id="brokerStatTotal">0</strong>
+            <div class="broker-board card-panel">
+              <div class="broker-board-bar">
+                <div class="broker-stats-inline" id="brokerStats">
+                  <span><strong id="brokerStatTotal">0</strong> jumla</span>
+                  <span class="dot">·</span>
+                  <span><strong id="brokerStatActive">0</strong> active</span>
+                  <span class="dot">·</span>
+                  <span><strong id="brokerStatInactive">0</strong> inactive</span>
+                  <span class="dot">·</span>
+                  <span><strong id="brokerStatAreas">0</strong> maeneo</span>
+                </div>
+                <p class="toolbar-meta"><span id="brokerVisibleCount">0</span> wanaonekana · A–Z</p>
               </div>
-              <div class="stat-card">
-                <span class="stat-label">Active</span>
-                <strong class="stat-value" id="brokerStatActive">0</strong>
-              </div>
-              <div class="stat-card">
-                <span class="stat-label">Inactive</span>
-                <strong class="stat-value" id="brokerStatInactive">0</strong>
-              </div>
-              <div class="stat-card">
-                <span class="stat-label">Maeneo</span>
-                <strong class="stat-value" id="brokerStatAreas">0</strong>
-              </div>
-            </div>
 
-            <div class="toolbar card-panel">
-              <div class="toolbar-search">
-                <label class="sr-only" for="brokerSearch">Tafuta dalali</label>
-                <input type="search" id="brokerSearch" placeholder="Tafuta jina, simu, au eneo…" autocomplete="off">
-              </div>
-              <div class="toolbar-filters">
+              <div class="broker-board-tools">
+                <input type="search" id="brokerSearch" placeholder="Tafuta jina, simu, au eneo…" autocomplete="off" aria-label="Tafuta dalali">
                 <select id="brokerAreaFilter" aria-label="Chuja kwa eneo">
                   <option value="">Maeneo yote</option>
                 </select>
@@ -292,12 +282,18 @@
                   <option value="inactive">Inactive</option>
                 </select>
               </div>
-              <p class="toolbar-meta"><span id="brokerVisibleCount">0</span> wanaonekana</p>
-            </div>
 
-            <div class="broker-grid" id="brokersGrid"></div>
-            <p class="empty empty-board hidden" id="emptyBrokers">Hakuna madalali bado. Bofya “Ongeza dalali” au Import seed.</p>
-            <p class="empty empty-board hidden" id="emptyBrokerSearch">Hakuna matokeo ya utafutaji. Jaribu jina au eneo lingine.</p>
+              <div class="broker-list-head" aria-hidden="true">
+                <span class="col-name">Jina</span>
+                <span class="col-phone">Simu</span>
+                <span class="col-areas">Maeneo</span>
+                <span class="col-status">Hali</span>
+                <span class="col-actions">Vitendo</span>
+              </div>
+              <div class="broker-list" id="brokersGrid"></div>
+              <p class="empty empty-board hidden" id="emptyBrokers">Hakuna madalali bado. Bofya “Ongeza dalali” au Import seed.</p>
+              <p class="empty empty-board hidden" id="emptyBrokerSearch">Hakuna matokeo. Jaribu jina au eneo lingine.</p>
+            </div>
 
             <div class="drawer-backdrop hidden" id="brokerDrawerBackdrop"></div>
             <aside class="drawer hidden" id="brokerDrawer" aria-labelledby="brokerFormTitle" aria-modal="true" role="dialog">

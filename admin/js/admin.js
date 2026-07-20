@@ -761,17 +761,19 @@ function getFilteredBrokers() {
   const area = document.getElementById("brokerAreaFilter")?.value || "";
   const status = document.getElementById("brokerStatusFilter")?.value || "";
 
-  return brokers.filter((b) => {
-    if (status === "active" && !b.active) return false;
-    if (status === "inactive" && b.active) return false;
-    if (area) {
-      const areas = splitAreas(b.areas).map((a) => a.toLowerCase());
-      if (!areas.includes(area.toLowerCase())) return false;
-    }
-    if (!q) return true;
-    const hay = [b.name, b.phone, b.email, b.areas, b.notes].join(" ").toLowerCase();
-    return hay.includes(q);
-  });
+  return brokers
+    .filter((b) => {
+      if (status === "active" && !b.active) return false;
+      if (status === "inactive" && b.active) return false;
+      if (area) {
+        const areas = splitAreas(b.areas).map((a) => a.toLowerCase());
+        if (!areas.includes(area.toLowerCase())) return false;
+      }
+      if (!q) return true;
+      const hay = [b.name, b.phone, b.email, b.areas, b.notes].join(" ").toLowerCase();
+      return hay.includes(q);
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base", numeric: true }));
 }
 
 function updateBrokerStats() {
@@ -809,11 +811,9 @@ function renderBrokers() {
   hide(emptySearch);
 
   grid.innerHTML = visible
-    .map((b) => {
+    .map((b, index) => {
       const areas = splitAreas(b.areas);
-      const areaChips = areas.length
-        ? areas.map((a) => `<span class="area-chip">${escapeHtml(a)}</span>`).join("")
-        : `<span class="area-chip muted">Hakuna eneo</span>`;
+      const areaText = areas.length ? escapeHtml(areas.join(", ")) : "—";
       const phoneDigits = String(b.phone || "").replace(/\D/g, "");
       let waHref = "";
       if (phoneDigits) {
@@ -825,26 +825,27 @@ function renderBrokers() {
         waHref = `https://wa.me/${intl}`;
       }
       const wa = waHref
-        ? `<a class="btn btn-ghost-sm broker-wa" href="${waHref}" target="_blank" rel="noopener">WhatsApp</a>`
+        ? `<a class="link-action" href="${waHref}" target="_blank" rel="noopener">WA</a>`
         : "";
       return `
-      <article class="broker-card ${b.active ? "" : "is-inactive"}">
-        <div class="broker-card-top">
-          <div class="broker-avatar" aria-hidden="true">${escapeHtml(brokerInitials(b.name))}</div>
+      <div class="broker-row ${b.active ? "" : "is-inactive"}">
+        <div class="col-name">
+          <span class="broker-index">${index + 1}</span>
+          <div class="broker-avatar sm" aria-hidden="true">${escapeHtml(brokerInitials(b.name))}</div>
           <div class="broker-id">
-            <h3 class="broker-name" title="${escapeHtml(b.name)}">${escapeHtml(b.name)}</h3>
-            <p class="broker-phone">${escapeHtml(b.phone)}</p>
+            <strong class="broker-name">${escapeHtml(b.name)}</strong>
+            ${b.email ? `<span class="broker-email">${escapeHtml(b.email)}</span>` : ""}
           </div>
-          <span class="status-pill ${b.active ? "active" : "inactive"}">${b.active ? "Active" : "Inactive"}</span>
         </div>
-        <div class="broker-areas">${areaChips}</div>
-        ${b.email ? `<p class="broker-email">${escapeHtml(b.email)}</p>` : ""}
-        <div class="broker-card-actions">
+        <div class="col-phone"><a href="tel:${escapeHtml(String(b.phone).replace(/\s/g, ""))}">${escapeHtml(b.phone)}</a></div>
+        <div class="col-areas" title="${areaText}">${areaText}</div>
+        <div class="col-status"><span class="status-pill ${b.active ? "active" : "inactive"}">${b.active ? "Active" : "Inactive"}</span></div>
+        <div class="col-actions">
           ${wa}
-          <button type="button" class="btn btn-secondary btn-sm" data-broker-edit="${b.id}">Edit</button>
-          <button type="button" class="btn btn-danger btn-sm" data-broker-del="${b.id}">Delete</button>
+          <button type="button" class="link-action" data-broker-edit="${b.id}">Edit</button>
+          <button type="button" class="link-action danger" data-broker-del="${b.id}">Delete</button>
         </div>
-      </article>`;
+      </div>`;
     })
     .join("");
 }
