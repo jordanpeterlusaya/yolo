@@ -228,6 +228,122 @@
     if (error) throw error;
   }
 
+  function mapLeadRow(row) {
+    return {
+      id: row.id,
+      clientName: row.client_name || "",
+      phone: row.phone || "",
+      moveDate: row.move_date || "",
+      viewingDate: row.viewing_date || "",
+      budget: row.budget != null ? Number(row.budget) : null,
+      preferredArea: row.preferred_area || "",
+      notes: row.notes || "",
+      createdAt: row.created_at || new Date().toISOString(),
+      updatedAt: row.updated_at || null,
+    };
+  }
+
+  function leadToDb(data) {
+    return {
+      client_name: String(data.clientName || "").trim(),
+      phone: data.phone ? String(data.phone).trim() : null,
+      move_date: data.moveDate || null,
+      viewing_date: data.viewingDate || null,
+      budget: data.budget != null && data.budget !== "" ? Number(data.budget) : null,
+      preferred_area: String(data.preferredArea || "").trim(),
+      notes: data.notes ? String(data.notes).trim() : null,
+      updated_at: new Date().toISOString(),
+    };
+  }
+
+  function mapBrokerRow(row) {
+    return {
+      id: row.id,
+      name: row.name || "",
+      phone: row.phone || "",
+      email: row.email || "",
+      areas: row.areas || "",
+      active: row.active !== false,
+      notes: row.notes || "",
+      createdAt: row.created_at || new Date().toISOString(),
+      updatedAt: row.updated_at || null,
+    };
+  }
+
+  function brokerToDb(data) {
+    return {
+      name: String(data.name || "").trim(),
+      phone: String(data.phone || "").trim(),
+      email: data.email ? String(data.email).trim() : null,
+      areas: data.areas ? String(data.areas).trim() : null,
+      active: data.active !== false,
+      notes: data.notes ? String(data.notes).trim() : null,
+      updated_at: new Date().toISOString(),
+    };
+  }
+
+  async function fetchClientLeads() {
+    const sb = ensure();
+    const { data, error } = await sb
+      .from("client_leads")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data || []).map(mapLeadRow);
+  }
+
+  async function createClientLead(data) {
+    const sb = ensure();
+    const payload = leadToDb(data);
+    payload.created_at = new Date().toISOString();
+    const { data: row, error } = await sb.from("client_leads").insert(payload).select("id").single();
+    if (error) throw error;
+    return row.id;
+  }
+
+  async function updateClientLead(id, data) {
+    const sb = ensure();
+    const { error } = await sb.from("client_leads").update(leadToDb(data)).eq("id", id);
+    if (error) throw error;
+  }
+
+  async function deleteClientLead(id) {
+    const sb = ensure();
+    const { error } = await sb.from("client_leads").delete().eq("id", id);
+    if (error) throw error;
+  }
+
+  async function fetchBrokers() {
+    const sb = ensure();
+    const { data, error } = await sb
+      .from("brokers")
+      .select("*")
+      .order("name", { ascending: true });
+    if (error) throw error;
+    return (data || []).map(mapBrokerRow);
+  }
+
+  async function createBroker(data) {
+    const sb = ensure();
+    const payload = brokerToDb(data);
+    payload.created_at = new Date().toISOString();
+    const { data: row, error } = await sb.from("brokers").insert(payload).select("id").single();
+    if (error) throw error;
+    return row.id;
+  }
+
+  async function updateBroker(id, data) {
+    const sb = ensure();
+    const { error } = await sb.from("brokers").update(brokerToDb(data)).eq("id", id);
+    if (error) throw error;
+  }
+
+  async function deleteBroker(id) {
+    const sb = ensure();
+    const { error } = await sb.from("brokers").delete().eq("id", id);
+    if (error) throw error;
+  }
+
   async function seedFromJson(items) {
     const sb = ensure();
     const rows = items.map((item) => {
@@ -298,6 +414,14 @@
     uploadPropertyImage,
     uploadPropertyVideo,
     uploadPropertyFile,
+    fetchClientLeads,
+    createClientLead,
+    updateClientLead,
+    deleteClientLead,
+    fetchBrokers,
+    createBroker,
+    updateBroker,
+    deleteBroker,
     seedFromJson,
     signIn,
     signOut,

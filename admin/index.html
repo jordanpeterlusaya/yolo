@@ -11,134 +11,307 @@
   <link rel="stylesheet" href="/admin/css/admin.css">
 </head>
 <body>
-  <header class="admin-header">
-    <a href="/admin/" class="brand">
-      <img src="/assets/logo.png" alt="YOLO" class="logo-img">
-      <span>Admin</span>
-    </a>
-    <div class="header-actions">
-      <a href="/" class="link-muted" target="_blank" rel="noopener">View user site</a>
-      <button type="button" class="btn btn-ghost hidden" id="logoutBtn">Log out</button>
+  <div class="admin-shell">
+    <aside class="admin-sidebar hidden" id="adminSidebar" aria-label="Admin navigation">
+      <div class="sidebar-brand">
+        <img src="/assets/logo.png" alt="YOLO" class="logo-img">
+        <span>YOLO Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" data-nav="rentals">
+          <span class="nav-icon" aria-hidden="true">🏠</span>
+          Nyumba (Rentals)
+        </button>
+        <button type="button" class="nav-item" data-nav="clients">
+          <span class="nav-icon" aria-hidden="true">👤</span>
+          Wateja (Clients)
+        </button>
+        <button type="button" class="nav-item" data-nav="brokers">
+          <span class="nav-icon" aria-hidden="true">🤝</span>
+          Madalali (Brokers)
+        </button>
+      </nav>
+      <div class="sidebar-foot">
+        <a href="/" class="sidebar-link" target="_blank" rel="noopener">View user site ↗</a>
+        <button type="button" class="btn btn-ghost-sidebar hidden" id="logoutBtn">Log out</button>
+      </div>
+    </aside>
+    <div class="sidebar-backdrop hidden" id="sidebarBackdrop"></div>
+
+    <div class="admin-main-wrap">
+      <header class="admin-topbar">
+        <button type="button" class="sidebar-toggle hidden" id="sidebarToggle" aria-label="Open menu">☰</button>
+        <a href="/admin/" class="topbar-brand">
+          <img src="/assets/logo.png" alt="YOLO" class="logo-img">
+          <span>Admin</span>
+        </a>
+        <div class="topbar-actions">
+          <a href="/" class="link-muted" target="_blank" rel="noopener">User site</a>
+          <span class="pill hidden" id="authEmail"></span>
+        </div>
+      </header>
+
+      <main class="admin-main">
+        <div id="setupNotice" class="notice warn hidden"></div>
+
+        <section class="card-panel" id="loginBox">
+          <h1>Admin login</h1>
+          <p class="sub">Sign in with your Supabase Email/Password admin user.</p>
+          <form id="loginForm">
+            <label for="email">Email</label>
+            <input type="email" id="email" required autocomplete="username" placeholder="admin@example.com">
+            <label for="password">Password</label>
+            <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
+            <p class="error hidden" id="loginError"></p>
+            <button type="submit" class="btn btn-primary">Sign in</button>
+          </form>
+        </section>
+
+        <div id="dashboard" class="hidden">
+          <!-- Rentals -->
+          <section class="admin-panel" data-panel="rentals">
+            <div class="dash-head">
+              <div>
+                <h1>Manage rentals</h1>
+                <p class="sub">Changes sync live to the user website via Supabase.</p>
+              </div>
+              <div class="dash-actions">
+                <button type="button" class="btn btn-secondary" id="seedBtn">Import sample rentals</button>
+              </div>
+            </div>
+
+            <div class="layout">
+              <form class="card-panel form-panel" id="propertyForm">
+                <h2 id="formTitle">Add rental</h2>
+                <input type="hidden" id="editId">
+
+                <label for="title">Title *</label>
+                <input type="text" id="title" required placeholder="3 Bedroom House in Masaki">
+
+                <label for="description">Description *</label>
+                <textarea id="description" rows="3" required placeholder="Short description for tenants"></textarea>
+
+                <label for="price">Monthly rent (TZS) *</label>
+                <input type="number" id="price" required min="0" placeholder="2500000">
+
+                <label for="propertyType">Property type</label>
+                <select id="propertyType">
+                  <option value="house">House</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="room">Room</option>
+                  <option value="commercial">Commercial</option>
+                </select>
+
+                <div class="row-2">
+                  <div>
+                    <label for="location">Location *</label>
+                    <input type="text" id="location" required placeholder="Masaki, Dar es Salaam">
+                  </div>
+                  <div>
+                    <label for="city">City *</label>
+                    <input type="text" id="city" required placeholder="Dar es Salaam">
+                  </div>
+                </div>
+
+                <div class="row-3">
+                  <div>
+                    <label for="bedrooms">Bedrooms</label>
+                    <input type="number" id="bedrooms" value="0" min="0">
+                  </div>
+                  <div>
+                    <label for="bathrooms">Bathrooms</label>
+                    <input type="number" id="bathrooms" value="0" min="0">
+                  </div>
+                  <div>
+                    <label for="area">Area (sqft)</label>
+                    <input type="number" id="area" value="0" min="0">
+                  </div>
+                </div>
+
+                <label for="imageFiles">Photos * <span class="label-hint">(up to 12, max 5 MB each)</span></label>
+                <div class="image-upload">
+                  <input type="file" id="imageFiles" accept="image/*" multiple>
+                  <div class="gallery-preview" id="galleryPreview"></div>
+                  <p class="image-hint" id="imageHint">Add one or more photos from your device</p>
+                </div>
+
+                <label for="videoFile">Video <span class="label-hint">(optional, MP4/WebM, max 50 MB)</span></label>
+                <div class="image-upload">
+                  <input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime">
+                  <div class="video-preview-wrap" id="videoPreviewWrap">
+                    <video id="videoPreview" class="video-preview hidden" controls playsinline></video>
+                    <button type="button" class="btn btn-ghost-sm hidden" id="clearVideoBtn">Remove video</button>
+                  </div>
+                  <p class="image-hint" id="videoHint">Optional walkthrough video for tenants</p>
+                </div>
+
+                <label class="check">
+                  <input type="checkbox" id="featured"> Featured on homepage
+                </label>
+
+                <p class="error hidden" id="formError"></p>
+                <p class="ok hidden" id="formOk"></p>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary" id="saveBtn">Save rental</button>
+                  <button type="button" class="btn btn-secondary hidden" id="cancelBtn">Cancel edit</button>
+                </div>
+              </form>
+
+              <div class="card-panel list-panel">
+                <div class="list-head">
+                  <h2>Posted rentals (<span id="count">0</span>)</h2>
+                  <button type="button" class="btn btn-secondary btn-sm" id="refreshListBtn">Refresh</button>
+                </div>
+                <div class="posted-grid" id="postedGrid"></div>
+                <p class="empty hidden" id="emptyList">No rentals yet. Add one or import samples.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Client leads -->
+          <section class="admin-panel hidden" data-panel="clients">
+            <div class="dash-head">
+              <div>
+                <h1>Data ya wateja</h1>
+                <p class="sub">Weka taarifa ulizokusanya kutoka kwa wateja — hamia lini, kuona nyumba lini, budget na eneo.</p>
+              </div>
+            </div>
+
+            <div class="layout layout-wide">
+              <form class="card-panel form-panel" id="clientForm">
+                <h2 id="clientFormTitle">Ongeza mteja</h2>
+                <input type="hidden" id="clientEditId">
+
+                <label for="clientName">Jina la mteja *</label>
+                <input type="text" id="clientName" required placeholder="Jina kamili">
+
+                <label for="clientPhone">Simu</label>
+                <input type="tel" id="clientPhone" placeholder="0750 000 000">
+
+                <div class="row-2">
+                  <div>
+                    <label for="moveDate">Anahamia lini</label>
+                    <input type="date" id="moveDate">
+                  </div>
+                  <div>
+                    <label for="viewingDate">Mpango wa kuona nyumba</label>
+                    <input type="date" id="viewingDate">
+                  </div>
+                </div>
+
+                <label for="clientBudget">Budget (TZS / mwezi)</label>
+                <input type="number" id="clientBudget" min="0" placeholder="1500000">
+
+                <label for="preferredArea">Atakaishi wapi *</label>
+                <input type="text" id="preferredArea" required placeholder="Masaki, Mikocheni, Upanga…">
+
+                <label for="clientNotes">Maelezo zaidi</label>
+                <textarea id="clientNotes" rows="3" placeholder="Aina ya nyumba, idadi ya vyumba, maelezo mengine…"></textarea>
+
+                <p class="error hidden" id="clientFormError"></p>
+                <p class="ok hidden" id="clientFormOk"></p>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary" id="clientSaveBtn">Hifadhi mteja</button>
+                  <button type="button" class="btn btn-secondary hidden" id="clientCancelBtn">Ghairi</button>
+                </div>
+              </form>
+
+              <div class="card-panel list-panel">
+                <div class="list-head">
+                  <h2>Wateja (<span id="clientCount">0</span>)</h2>
+                  <button type="button" class="btn btn-secondary btn-sm" id="refreshClientsBtn">Refresh</button>
+                </div>
+                <div class="table-wrap">
+                  <table class="admin-table data-table" id="clientsTable">
+                    <thead>
+                      <tr>
+                        <th>Mteja</th>
+                        <th>Hamia</th>
+                        <th>Kuona nyumba</th>
+                        <th>Budget</th>
+                        <th>Eneo</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="clientsBody"></tbody>
+                  </table>
+                </div>
+                <p class="empty hidden" id="emptyClients">Hakuna wateja bado. Ongeza taarifa za kwanza hapo juu.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Brokers -->
+          <section class="admin-panel hidden" data-panel="brokers">
+            <div class="dash-head">
+              <div>
+                <h1>Madalali waliopo</h1>
+                <p class="sub">Orodha ya madalali wanaoshirikiana na YOLO — simu, maeneo na hali.</p>
+              </div>
+            </div>
+
+            <div class="layout layout-wide">
+              <form class="card-panel form-panel" id="brokerForm">
+                <h2 id="brokerFormTitle">Ongeza dalali</h2>
+                <input type="hidden" id="brokerEditId">
+
+                <label for="brokerName">Jina *</label>
+                <input type="text" id="brokerName" required placeholder="Jina la dalali">
+
+                <label for="brokerPhone">Simu *</label>
+                <input type="tel" id="brokerPhone" required placeholder="0750 000 000">
+
+                <label for="brokerEmail">Barua pepe</label>
+                <input type="email" id="brokerEmail" placeholder="dalali@example.com">
+
+                <label for="brokerAreas">Maeneo anayofanya kazi</label>
+                <input type="text" id="brokerAreas" placeholder="Masaki, Oyster Bay, Mikocheni…">
+
+                <label for="brokerNotes">Maelezo</label>
+                <textarea id="brokerNotes" rows="2" placeholder="Maelezo ya ziada…"></textarea>
+
+                <label class="check">
+                  <input type="checkbox" id="brokerActive" checked> Dalali hai (active)
+                </label>
+
+                <p class="error hidden" id="brokerFormError"></p>
+                <p class="ok hidden" id="brokerFormOk"></p>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary" id="brokerSaveBtn">Hifadhi dalali</button>
+                  <button type="button" class="btn btn-secondary hidden" id="brokerCancelBtn">Ghairi</button>
+                </div>
+              </form>
+
+              <div class="card-panel list-panel">
+                <div class="list-head">
+                  <h2>Madalali (<span id="brokerCount">0</span>)</h2>
+                  <button type="button" class="btn btn-secondary btn-sm" id="refreshBrokersBtn">Refresh</button>
+                </div>
+                <div class="table-wrap">
+                  <table class="admin-table data-table" id="brokersTable">
+                    <thead>
+                      <tr>
+                        <th>Jina</th>
+                        <th>Simu</th>
+                        <th>Maeneo</th>
+                        <th>Hali</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="brokersBody"></tbody>
+                  </table>
+                </div>
+                <p class="empty hidden" id="emptyBrokers">Hakuna madalali bado. Ongeza dalali wa kwanza hapo juu.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
     </div>
-  </header>
-
-  <main class="admin-main">
-    <div id="setupNotice" class="notice warn hidden"></div>
-
-    <section class="card-panel" id="loginBox">
-      <h1>Admin login</h1>
-      <p class="sub">Sign in with your Supabase Email/Password admin user to manage rentals.</p>
-      <form id="loginForm">
-        <label for="email">Email</label>
-        <input type="email" id="email" required autocomplete="username" placeholder="admin@example.com">
-        <label for="password">Password</label>
-        <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
-        <p class="error hidden" id="loginError"></p>
-        <button type="submit" class="btn btn-primary">Sign in</button>
-      </form>
-    </section>
-
-    <section id="dashboard" class="hidden">
-      <div class="dash-head">
-        <div>
-          <h1>Manage rentals</h1>
-          <p class="sub">Changes sync live to the user website via Supabase.</p>
-        </div>
-        <div class="dash-actions">
-          <button type="button" class="btn btn-secondary" id="seedBtn">Import sample rentals</button>
-          <span class="pill" id="authEmail"></span>
-        </div>
-      </div>
-
-      <div class="layout">
-        <form class="card-panel form-panel" id="propertyForm">
-          <h2 id="formTitle">Add rental</h2>
-          <input type="hidden" id="editId">
-
-          <label for="title">Title *</label>
-          <input type="text" id="title" required placeholder="3 Bedroom House in Masaki">
-
-          <label for="description">Description *</label>
-          <textarea id="description" rows="3" required placeholder="Short description for tenants"></textarea>
-
-          <label for="price">Monthly rent (TZS) *</label>
-          <input type="number" id="price" required min="0" placeholder="2500000">
-
-          <label for="propertyType">Property type</label>
-          <select id="propertyType">
-            <option value="house">House</option>
-            <option value="apartment">Apartment</option>
-            <option value="room">Room</option>
-            <option value="commercial">Commercial</option>
-          </select>
-
-          <div class="row-2">
-            <div>
-              <label for="location">Location *</label>
-              <input type="text" id="location" required placeholder="Masaki, Dar es Salaam">
-            </div>
-            <div>
-              <label for="city">City *</label>
-              <input type="text" id="city" required placeholder="Dar es Salaam">
-            </div>
-          </div>
-
-          <div class="row-3">
-            <div>
-              <label for="bedrooms">Bedrooms</label>
-              <input type="number" id="bedrooms" value="0" min="0">
-            </div>
-            <div>
-              <label for="bathrooms">Bathrooms</label>
-              <input type="number" id="bathrooms" value="0" min="0">
-            </div>
-            <div>
-              <label for="area">Area (sqft)</label>
-              <input type="number" id="area" value="0" min="0">
-            </div>
-          </div>
-
-          <label for="imageFiles">Photos * <span class="label-hint">(up to 12, max 5 MB each)</span></label>
-          <div class="image-upload">
-            <input type="file" id="imageFiles" accept="image/*" multiple>
-            <div class="gallery-preview" id="galleryPreview"></div>
-            <p class="image-hint" id="imageHint">Add one or more photos from your device</p>
-          </div>
-
-          <label for="videoFile">Video <span class="label-hint">(optional, MP4/WebM, max 50 MB)</span></label>
-          <div class="image-upload">
-            <input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime">
-            <div class="video-preview-wrap" id="videoPreviewWrap">
-              <video id="videoPreview" class="video-preview hidden" controls playsinline></video>
-              <button type="button" class="btn btn-ghost-sm hidden" id="clearVideoBtn">Remove video</button>
-            </div>
-            <p class="image-hint" id="videoHint">Optional walkthrough video for tenants</p>
-          </div>
-
-          <label class="check">
-            <input type="checkbox" id="featured"> Featured on homepage
-          </label>
-
-          <p class="error hidden" id="formError"></p>
-          <p class="ok hidden" id="formOk"></p>
-
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary" id="saveBtn">Save rental</button>
-            <button type="button" class="btn btn-secondary hidden" id="cancelBtn">Cancel edit</button>
-          </div>
-        </form>
-
-        <div class="card-panel list-panel">
-          <div class="list-head">
-            <h2>Posted rentals (<span id="count">0</span>)</h2>
-            <button type="button" class="btn btn-secondary btn-sm" id="refreshListBtn">Refresh</button>
-          </div>
-          <div class="posted-grid" id="postedGrid"></div>
-          <p class="empty hidden" id="emptyList">No rentals yet. Add one or import samples.</p>
-        </div>
-      </div>
-    </section>
-  </main>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/shared/supabase-config.js"></script>
