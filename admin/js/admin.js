@@ -104,11 +104,32 @@ function showDashboard(user) {
 async function loadCrmData() {
   try {
     clientLeads = await window.YoloFirebase.fetchClientLeads();
-    brokers = await window.YoloFirebase.fetchBrokers();
     renderClients();
+  } catch (err) {
+    console.error(err);
+    clientLeads = [];
+    renderClients();
+    const msg = String(err.message || err);
+    if (/client_leads|PGRST205|schema cache/i.test(msg)) {
+      document.getElementById("emptyClients").textContent =
+        "Jedwali la wateja bado halijaundwa. Endesha shared/migrate-crm.sql kwenye Supabase SQL Editor.";
+      show(document.getElementById("emptyClients"));
+    }
+  }
+
+  try {
+    brokers = await window.YoloFirebase.fetchBrokers();
     renderBrokers();
   } catch (err) {
     console.error(err);
+    brokers = [];
+    renderBrokers();
+    const msg = String(err.message || err);
+    if (/brokers|PGRST205|schema cache/i.test(msg)) {
+      document.getElementById("emptyBrokers").textContent =
+        "Jedwali la madalali bado halijaundwa. Endesha shared/migrate-crm.sql kwenye Supabase SQL Editor, kisha Import seed madalali.";
+      show(document.getElementById("emptyBrokers"));
+    }
   }
 }
 
