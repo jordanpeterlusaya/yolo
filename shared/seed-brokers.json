@@ -18,5 +18,20 @@
   { "name": "dalaligoba_kakubwa", "phone": "0749 247 010", "areas": "Goba", "active": true },
   { "name": "dalali_mwenge.sinza_mikocheni", "phone": "0625 873 687", "areas": "Mwenge, Sinza, Mikocheni", "active": true },
   { "name": "dalali_dizzo_ubungo25_", "phone": "0677 370 515", "areas": "Ubungo, Kimara", "active": true },
-  { "name": "damalo_dalali_kimara_ubung_mbz", "phone": "0710 614 924", "areas": "Kimara, Ubungo, Mbezi", "active": true }
+  { "name": "damalo_dalali_kimara_ubung_mbz", "phone": "0710 614 924", "areas": "Kimara, Ubungo, Mbezi", "active": true },
+  { "name": "dalali_masaki", "phone": "0789 390 128", "areas": "Masaki", "active": true },
+  { "name": "dalalioysterbay_masaki24", "phone": "0658 890 651", "areas": "Masaki, Oysterbay", "active": true },
+  { "name": "kisuka.real.estate", "phone": "0672 821 444", "areas": "Masaki, Mikocheni", "active": true },
+  { "name": "wags_investment8", "phone": "0714 575 588", "areas": "Masaki, Kawe", "active": true },
+  { "name": "dalali_nyumba_appatment", "phone": "0787 093 748", "areas": "Sinza, Makongo, Goba", "active": true },
+  { "name": "dalali_msomi_sinza", "phone": "0716 279 427", "areas": "Sinza", "active": true },
+  { "name": "dalaliloyalelly", "phone": "0620 328 143", "areas": "Kawe, Goba, Mbezi", "active": true },
+  { "name": "dalali_kidari_goba", "phone": "0682 341 126", "areas": "Goba, Mbezi", "active": true },
+  { "name": "dalalikinondoni_kipara", "phone": "0656 386 610", "areas": "Kinondoni, Magomeni", "active": true },
+  { "name": "kibopile_properties_", "phone": "0777 262 048", "areas": "Mikocheni, Masaki", "active": true },
+  { "name": "Muungano Real Estate-Dalali Mbezi Beach", "phone": "0659 900 800", "areas": "Mbezi Beach", "active": true },
+  { "name": "MADALALI TANZANIA", "phone": "0713 571 992", "areas": "Mbezi, Goba", "active": true },
+  { "name": "MyDalali", "phone": "0718 880 607", "areas": "Dar es Salaam", "active": true },
+  { "name": "dalali_zanzibari", "phone": "0653 007 438", "areas": "Magomeni, Kinondoni", "active": true },
+  { "name": "tanzania_realestate.co", "phone": "0714 899 187", "areas": "Masaki, Mikocheni", "active": true }
 ]
