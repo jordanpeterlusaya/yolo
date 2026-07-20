@@ -1,37 +1,303 @@
 [
-  { "name": "dalali__kigamboni_mbavu", "phone": "0769 554 221", "areas": "Kigamboni", "active": true },
-  { "name": "dalali_kigamboni_simba_dsm", "phone": "0746 407 197", "areas": "Kigamboni, Kibada", "active": true },
-  { "name": "dalali_kigamboni_mahili", "phone": "0758 631 303", "areas": "Kigamboni", "active": true },
-  { "name": "dalali_kigamboni_rasi_namba_1", "phone": "0686 705 903", "areas": "Kigamboni", "active": true },
-  { "name": "dalali__saidi__kigamboni__dsm", "phone": "0787 701 266", "areas": "Kigamboni", "active": true },
-  { "name": "dalali_kigamboni_msauzi", "phone": "0756 588 268", "areas": "Kigamboni", "active": true },
-  { "name": "dalali_kigamboni_viwanja_", "phone": "0787 009 242", "areas": "Kigamboni", "active": true },
-  { "name": "viwanja_bora_kabisa_tz", "phone": "0767 053 517", "areas": "Kigamboni", "active": true },
-  { "name": "dalalidoktatz", "phone": "0626 529 397", "areas": "Kigamboni", "active": true },
-  { "name": "nyumba_kigamboni_tz_dsm", "phone": "0746 407 197", "areas": "Kigamboni", "active": true },
-  { "name": "dalali_salehe_mohamedi", "phone": "0712 058 357", "areas": "Kigamboni", "active": true },
-  { "name": "dalali_patrick_kimara_mbezi", "phone": "0672 673 363", "areas": "Kimara, Mbezi, Goba", "active": true },
-  { "name": "dalali_goba_madale_damasi", "phone": "0745 559 598", "areas": "Goba, Madale", "active": true },
-  { "name": "dalali_amani_kimara", "phone": "0787 205 300", "areas": "Kimara, Ubungo, Mbezi, Goba", "active": true },
-  { "name": "dalali_nyumba_goba", "phone": "0714 335 450", "areas": "Goba", "active": true },
-  { "name": "dalali_goba_festo_mbezi", "phone": "0714 539 608", "areas": "Goba, Mbezi", "active": true },
-  { "name": "dalaligoba_kakubwa", "phone": "0749 247 010", "areas": "Goba", "active": true },
-  { "name": "dalali_mwenge.sinza_mikocheni", "phone": "0625 873 687", "areas": "Mwenge, Sinza, Mikocheni", "active": true },
-  { "name": "dalali_dizzo_ubungo25_", "phone": "0677 370 515", "areas": "Ubungo, Kimara", "active": true },
-  { "name": "damalo_dalali_kimara_ubung_mbz", "phone": "0710 614 924", "areas": "Kimara, Ubungo, Mbezi", "active": true },
-  { "name": "dalali_masaki", "phone": "0789 390 128", "areas": "Masaki", "active": true },
-  { "name": "dalalioysterbay_masaki24", "phone": "0658 890 651", "areas": "Masaki, Oysterbay", "active": true },
-  { "name": "kisuka.real.estate", "phone": "0672 821 444", "areas": "Masaki, Mikocheni", "active": true },
-  { "name": "wags_investment8", "phone": "0714 575 588", "areas": "Masaki, Kawe", "active": true },
-  { "name": "dalali_nyumba_appatment", "phone": "0787 093 748", "areas": "Sinza, Makongo, Goba", "active": true },
-  { "name": "dalali_msomi_sinza", "phone": "0716 279 427", "areas": "Sinza", "active": true },
-  { "name": "dalaliloyalelly", "phone": "0620 328 143", "areas": "Kawe, Goba, Mbezi", "active": true },
-  { "name": "dalali_kidari_goba", "phone": "0682 341 126", "areas": "Goba, Mbezi", "active": true },
-  { "name": "dalalikinondoni_kipara", "phone": "0656 386 610", "areas": "Kinondoni, Magomeni", "active": true },
-  { "name": "kibopile_properties_", "phone": "0777 262 048", "areas": "Mikocheni, Masaki", "active": true },
-  { "name": "Muungano Real Estate-Dalali Mbezi Beach", "phone": "0659 900 800", "areas": "Mbezi Beach", "active": true },
-  { "name": "MADALALI TANZANIA", "phone": "0713 571 992", "areas": "Mbezi, Goba", "active": true },
-  { "name": "MyDalali", "phone": "0718 880 607", "areas": "Dar es Salaam", "active": true },
-  { "name": "dalali_zanzibari", "phone": "0653 007 438", "areas": "Magomeni, Kinondoni", "active": true },
-  { "name": "tanzania_realestate.co", "phone": "0714 899 187", "areas": "Masaki, Mikocheni", "active": true }
+  {
+    "name": "dalali__kigamboni_mbavu",
+    "phone": "0769 554 221",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "dalali_kigamboni_simba_dsm",
+    "phone": "0746 407 197",
+    "areas": "Kigamboni, Kibada",
+    "active": true
+  },
+  {
+    "name": "dalali_kigamboni_mahili",
+    "phone": "0758 631 303",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "dalali_kigamboni_rasi_namba_1",
+    "phone": "0686 705 903",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "dalali__saidi__kigamboni__dsm",
+    "phone": "0787 701 266",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "dalali_kigamboni_msauzi",
+    "phone": "0756 588 268",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "dalali_kigamboni_viwanja_",
+    "phone": "0787 009 242",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "viwanja_bora_kabisa_tz",
+    "phone": "0767 053 517",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "dalalidoktatz",
+    "phone": "0626 529 397",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "nyumba_kigamboni_tz_dsm",
+    "phone": "0746 407 197",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "dalali_salehe_mohamedi",
+    "phone": "0712 058 357",
+    "areas": "Kigamboni",
+    "active": true
+  },
+  {
+    "name": "dalali_patrick_kimara_mbezi",
+    "phone": "0672 673 363",
+    "areas": "Kimara, Mbezi, Goba",
+    "active": true
+  },
+  {
+    "name": "dalali_goba_madale_damasi",
+    "phone": "0745 559 598",
+    "areas": "Goba, Madale",
+    "active": true
+  },
+  {
+    "name": "dalali_amani_kimara",
+    "phone": "0787 205 300",
+    "areas": "Kimara, Ubungo, Mbezi, Goba",
+    "active": true
+  },
+  {
+    "name": "dalali_nyumba_goba",
+    "phone": "0714 335 450",
+    "areas": "Goba",
+    "active": true
+  },
+  {
+    "name": "dalali_goba_festo_mbezi",
+    "phone": "0714 539 608",
+    "areas": "Goba, Mbezi",
+    "active": true
+  },
+  {
+    "name": "dalaligoba_kakubwa",
+    "phone": "0749 247 010",
+    "areas": "Goba",
+    "active": true
+  },
+  {
+    "name": "dalali_mwenge.sinza_mikocheni",
+    "phone": "0625 873 687",
+    "areas": "Mwenge, Sinza, Mikocheni",
+    "active": true
+  },
+  {
+    "name": "dalali_dizzo_ubungo25_",
+    "phone": "0677 370 515",
+    "areas": "Ubungo, Kimara",
+    "active": true
+  },
+  {
+    "name": "damalo_dalali_kimara_ubung_mbz",
+    "phone": "0710 614 924",
+    "areas": "Kimara, Ubungo, Mbezi",
+    "active": true
+  },
+  {
+    "name": "dalali_masaki",
+    "phone": "0789 390 128",
+    "areas": "Masaki",
+    "active": true
+  },
+  {
+    "name": "dalalioysterbay_masaki24",
+    "phone": "0658 890 651",
+    "areas": "Masaki, Oysterbay",
+    "active": true
+  },
+  {
+    "name": "kisuka.real.estate",
+    "phone": "0672 821 444",
+    "areas": "Masaki, Mikocheni",
+    "active": true
+  },
+  {
+    "name": "wags_investment8",
+    "phone": "0714 575 588",
+    "areas": "Masaki, Kawe",
+    "active": true
+  },
+  {
+    "name": "dalali_nyumba_appatment",
+    "phone": "0787 093 748",
+    "areas": "Sinza, Makongo, Goba",
+    "active": true
+  },
+  {
+    "name": "dalali_msomi_sinza",
+    "phone": "0716 279 427",
+    "areas": "Sinza",
+    "active": true
+  },
+  {
+    "name": "dalaliloyalelly",
+    "phone": "0620 328 143",
+    "areas": "Kawe, Goba, Mbezi",
+    "active": true
+  },
+  {
+    "name": "dalali_kidari_goba",
+    "phone": "0682 341 126",
+    "areas": "Goba, Mbezi",
+    "active": true
+  },
+  {
+    "name": "dalalikinondoni_kipara",
+    "phone": "0656 386 610",
+    "areas": "Kinondoni, Magomeni",
+    "active": true
+  },
+  {
+    "name": "kibopile_properties_",
+    "phone": "0777 262 048",
+    "areas": "Mikocheni, Masaki",
+    "active": true
+  },
+  {
+    "name": "Muungano Real Estate-Dalali Mbezi Beach",
+    "phone": "0659 900 800",
+    "areas": "Mbezi Beach",
+    "active": true
+  },
+  {
+    "name": "MADALALI TANZANIA",
+    "phone": "0713 571 992",
+    "areas": "Mbezi, Goba",
+    "active": true
+  },
+  {
+    "name": "MyDalali",
+    "phone": "0718 880 607",
+    "areas": "Dar es Salaam",
+    "active": true
+  },
+  {
+    "name": "dalali_zanzibari",
+    "phone": "0653 007 438",
+    "areas": "Magomeni, Kinondoni",
+    "active": true
+  },
+  {
+    "name": "tanzania_realestate.co",
+    "phone": "0714 899 187",
+    "areas": "Masaki, Mikocheni",
+    "active": true
+  },
+  {
+    "name": "dalal_lyimo_kimara_korogwe",
+    "phone": "0655 256 419",
+    "areas": "Kimara, Korogwe",
+    "active": true
+  },
+  {
+    "name": "dalalimbezibeach_rahimu",
+    "phone": "0788 783 636",
+    "areas": "Mbezi Beach",
+    "active": true
+  },
+  {
+    "name": "dalalimbezibeach_salasala",
+    "phone": "0692 406 639",
+    "areas": "Mbezi, Salasala",
+    "active": true
+  },
+  {
+    "name": "dalalimbezibeach_semba",
+    "phone": "0718 759 287",
+    "areas": "Mbezi Beach",
+    "active": true
+  },
+  {
+    "name": "dalali_shoo_kimara",
+    "phone": "0670 452 240",
+    "areas": "Kimara, Mbezi",
+    "active": true
+  },
+  {
+    "name": "dalalikinondoni_ibra",
+    "phone": "0747 196 597",
+    "areas": "Kinondoni",
+    "active": true
+  },
+  {
+    "name": "dalaliramatz",
+    "phone": "0682 402 327",
+    "areas": "Dar es Salaam",
+    "active": true
+  },
+  {
+    "name": "dalali_mshati_kimara_mbezi",
+    "phone": "0658 586 864",
+    "areas": "Kimara, Mbezi",
+    "active": true
+  },
+  {
+    "name": "dalali_ubungo_osama",
+    "phone": "0674 198 120",
+    "areas": "Ubungo, Kimara",
+    "active": true
+  },
+  {
+    "name": "dalali_msigwa_ubungo_mbezi",
+    "phone": "0759 151 524",
+    "areas": "Ubungo, Mbezi",
+    "active": true
+  },
+  {
+    "name": "dalalimastertz",
+    "phone": "0764 486 945",
+    "areas": "Dar es Salaam",
+    "active": true
+  },
+  {
+    "name": "dalalimrbosstabata",
+    "phone": "0755 454 251",
+    "areas": "Tabata",
+    "active": true
+  },
+  {
+    "name": "dalali_feza_mbezi_kimara_goba",
+    "phone": "0688 881 883",
+    "areas": "Mbezi, Kimara, Goba",
+    "active": true
+  },
+  {
+    "name": "dalali_mwanamke_mbezibeachtz",
+    "phone": "0712 531 657",
+    "areas": "Mbezi Beach",
+    "active": true
+  },
+  {
+    "name": "dalali_ivan_ubungo_kimara",
+    "phone": "Via profile",
+    "areas": "Ubungo, Kimara",
+    "notes": "WhatsApp kupitia profile",
+    "active": true
+  }
 ]
